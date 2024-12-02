@@ -1,0 +1,81 @@
+@media screen {
+  .advertComponent {
+    width: 100%;
+    display: flex;
+    padding: 10px;
+    min-height: 150px;
+    position: relative;
+    border-radius: 15px;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .advertImage {
+    border-radius: inherit;
+    filter: brightness(60%);
+  }
+
+  .bannerInfo {
+    gap: 10px;
+    z-index: 10;
+    display: flex;
+    padding: 10px 0;
+    min-height: inherit;
+    flex-direction: column;
+    color: var(--background-color);
+    justify-content: space-between;
+  }
+
+  .bannerInfo h1 {
+    font-size: 1.2rem;
+    font-family: var(--font-poppins-extrabold);
+  }
+
+
+  .buttonBanner {
+    cursor: pointer;
+    padding: 15px 30px;
+    width: fit-content;
+    border-radius: 15px;
+    height: fit-content;
+    background: transparent;
+    text-transform: capitalize;
+    color: var(--primary-color);
+    background-color: var(--background-color);
+  }
+
+  .buttonBanner:hover {
+    color: var(--background-color);
+    background-color: var(--tertiary-color);
+  }
+}
+
+/* using it as global style for larger devices  */
+@media only screen and (min-width: 48em) {
+  .imageSlider {
+    justify-content: center;
+  }
+
+
+  .bannerInfo {
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .bannerInfo h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* ipad pro screens & laptop */
+@media only screen and (min-width: 49em) and (max-width: 64em) {
+}
+
+/* large screens : Desktop and 4k screens */
+
+@media only screen and (min-width: 64.063em) and (max-width: 90em) {
+}
+
+/* 5k screens and above */
+@media only screen and (min-width: 91em) {
+}

@@ -1,0 +1,139 @@
+@media screen {
+  
+  .popupContent{
+    gap: 50px;
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .popupContentInner{
+    gap: 40px;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    flex-direction: column;
+
+  }
+
+  .popupHeader{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .popupHeader h1 {
+    font-size: 1.1rem;
+    font-family: var(--font-poppins-regular);
+
+
+  }
+
+  .popupHeader p {
+    font-size: 1rem;
+
+  }
+
+  .socialContainer {
+    gap: 20px;
+    display: flex;
+    cursor: pointer;
+    flex-wrap: wrap;
+    align-items: center;
+    
+  }
+
+  .socialIconWrap {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    justify-content: center;
+    box-shadow: var(--shadow);
+  }
+
+  .socialIconWrap:hover {
+    background-color: var(--tertiary-lighter-color);
+  }
+
+  .copyInner {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .copyInner h1 {
+    font-size: 1rem;
+    font-family: var(--font-poppins-regular);
+    
+  }
+
+  .shareIcon{
+    font-size: 30px;
+  }
+
+  .linkIcon {
+    font-size: 20px;
+    color: var(--secondary-color);
+  }
+
+  .copyField{
+    gap: 10px;
+    display: flex;
+    padding: 20px 10px;
+    overflow: hidden;
+    border-radius: 8px;
+    align-items: center;
+    box-shadow: var(--shadow);
+
+  }
+
+  .copyField p {
+    font-size: 1rem;
+    color: var(--secondary-color);
+  }
+
+  .formPromoteBtn {
+    width: 100%;
+    display: flex;
+    font-size: 1rem;
+    cursor: pointer;
+    min-height: 50px;
+    max-height: 50px;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    color: var(--background-color);
+    background-color: var(--tertiary-color);
+  }
+
+  .formPromoteBtn:hover {
+    background-color: var(--tertiary-light-color);
+
+  }
+
+  
+}
+
+/* using it as global style for larger devices  */
+@media only screen and (min-width: 48em) {
+
+
+
+}
+
+/* ipad pro screens & laptop */
+@media only screen and (min-width: 49em) and (max-width: 64em) {
+}
+
+/* large screens : Desktop and 4k screens */
+
+@media only screen and (min-width: 64.063em) and (max-width: 90em) {
+}
+
+/* 5k screens and above */
+@media only screen and (min-width: 91em) {
+}

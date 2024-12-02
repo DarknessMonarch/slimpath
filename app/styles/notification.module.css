@@ -1,0 +1,127 @@
+@media screen {
+  .notificationPage {
+    gap: 20px;
+    display: flex;
+    padding: 20px 0;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .sectionTitle {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sectionTitle h3 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-family: var(--font-poppins-light);
+  }
+
+  .overviewIcon {
+    font-size: 24px;
+    color: var(--primary-color);
+  }
+
+  .enableNotifications {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    display: flex;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color);
+  }
+
+  .enableButton {
+    gap: 10px;
+    width: 100%;
+    max-height: 50px;
+    min-height: 50px;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 8px;
+    color: var(--background-color);
+    background-color: var(--tertiary-color);
+  }
+
+  .enableButton:hover {
+    background-color: var(--tertiary-light-color);
+  }
+
+
+  .scheduleList {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    padding: 10px;
+    border-radius: 8px;
+    flex-direction: column;
+    background-color: var(--background-color);
+  }
+
+  .scheduleItem {
+    gap: 5px;
+    padding: 10px;
+    display: flex;
+    border-radius: inherit;
+    flex-direction: column;
+    background-color: var(--tertiary-lighter-color);
+  }
+
+  .scheduleItemHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .scheduleItemHeader h3 {
+    font-size: 1rem;
+    font-family: var(--font-poppins-light);
+
+  }
+
+
+
+  .scheduleItemInner {
+    gap: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scheduleItemInner p {
+    font-size: .8rem;
+  }
+}
+
+/* using it as global style for larger devices  */
+@media only screen and (min-width: 48em) {
+  .enableNotifications {
+    width: calc(60% / 2);
+  }
+
+  .scheduleList {
+    max-height: 600px;
+    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: calc(60% / 2);
+  }
+}
+
+/* ipad pro screens & laptop */
+@media only screen and (min-width: 49em) and (max-width: 64em) {
+}
+
+/* large screens : Desktop and 4k screens */
+
+@media only screen and (min-width: 64.063em) and (max-width: 90em) {
+}
+
+/* 5k screens and above */
+@media only screen and (min-width: 91em) {
+}

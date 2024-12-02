@@ -1,0 +1,147 @@
+@media screen {
+  .referralContainer {
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .referralHeader {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .referralHeader h1 {
+    font-size: 1.2rem;
+  }
+
+  .referralHeader p {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--background-light-color);
+  }
+
+  .generateLinkContainer {
+    gap: 20px;
+    display: flex;
+    overflow: hidden;
+    align-items: start;
+    flex-direction: column;
+  }
+
+
+  .copyButton {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-effect);
+  }
+  
+
+  .copyButton:hover {
+    background-color: var(--secondary-color);
+  }
+
+  .referralContainerWrapper {
+    gap: 10px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+
+  .referralLinkInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    text-wrap: break-word;
+    color: var(--secondary-color);
+    background-color: var(--primary-color);
+  }
+
+  .referralImage {
+    width: 50px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid var(--primary-light-color);
+  }
+
+  .referralImageInfo {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    align-items: start;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .referralImageInfo p {
+    padding: 10px;
+    background-color: var(--primary-glass-color);
+  }
+
+  .referralImageInfoWrapper h2 {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .referralImageInfoWrapper span {
+    color: var(--secondary-color);
+
+    font-size: 0.7rem;
+    font-weight: 300;
+  }
+}
+
+/* using it as global style for larger devices  */
+@media only screen and (min-width: 48em) {
+  .referralContainerWrapper {
+    padding: 10px;
+  }
+
+  .referralImageInfoWrapper h2 {
+    font-size: 1.2rem;
+  }
+
+  .referralImageInfoWrapper span {
+    font-size: 0.9rem;
+    color: var(--background-light-color);
+  }
+
+  .referralImage {
+    width: 100px;
+    height: 50px;
+  }
+
+  .referralImageInfo {
+    flex-direction: row;
+  }
+
+  .copyButton {
+    gap: 10px;
+    padding: 10px;
+    width: fit-content;
+  }
+}
+
+/* ipad pro screens & laptop */
+@media only screen and (min-width: 49em) and (max-width: 64em) {
+}
+
+/* large screens : Desktop and 4k screens */
+
+@media only screen and (min-width: 64.063em) and (max-width: 90em) {
+}
+
+/* 5k screens and above */
+@media only screen and (min-width: 91em) {
+}

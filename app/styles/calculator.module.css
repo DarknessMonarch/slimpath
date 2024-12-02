@@ -1,0 +1,240 @@
+@media screen {
+  .calculatorContainer {
+    gap: 20px;
+    width: 100%;
+    display: flex;
+    padding: 20px 0;
+    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-direction: column;
+
+  }
+
+  .calculatorContainerInner {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sectionTitle {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .sectionTitle h3 {
+    font-size: 1rem;
+    color: var(--secondary-color);
+    font-family: var(--font-poppins-light);
+  }
+
+  .overviewIcon {
+    font-size: 24px;
+    color: var(--secondary-color);
+  }
+
+  .calculatorSection {
+    gap: 20px;
+    width: 100%;
+    display: flex;
+    padding: 20px;
+    border-radius: 15px;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    background-color: var(--background-color);
+  }
+
+  .inputForm {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .inputForm p {
+    font-size: 0.8rem;
+    color: var(--tertiary-color);
+  }
+
+  .ingredientsList {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .inputGroup {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ingredientSelect {
+    flex: 2;
+    padding: 10px;
+    border-radius: 8px;
+    color: var(--dark-color);
+    border: 1px solid var(--dark-color);
+  }
+
+  .weightInput {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    color: var(--dark-color);
+    border: 1px solid var(--dark-color);
+  }
+
+  .addButton {
+    background-color: var(--tertiary-color);
+    font-family: var(--font-poppins-light);
+    color: var(--background-color);
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    height: 50px;
+    border: none;
+    width: 100%;
+  }
+
+  .addButton:hover {
+    background-color: var(--tertiary-light-color);
+  }
+
+  .ingredientItem {
+    display: flex;
+    padding: 15px;
+    align-items: center;
+    border-radius: 15px;
+    background-color: var(--tertiary-lighter-color);
+  }
+
+  .ingredientInfo {
+    gap: 5px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ingredientInfo h1 {
+    font-size: 1rem;
+    text-transform: capitalize;
+  }
+
+  .nutritionInfo {
+    gap: 15px;
+    display: flex;
+  }
+
+  .nutritionInfo span {
+    font-size: .8rem;
+    color: var(--dark-color);
+  }
+
+  .removeButton {
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    background: none;
+    color: var(--tertiary-color);
+  }
+
+  .nutritionSummary {
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    border-radius: 8px;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    background-color: var(--background-color);
+  }
+
+  .nutritionSummary h2 {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+  }
+
+  .summaryGrid {
+    gap: 4px;
+    display: grid;
+    grid-template-columns: 1fr;
+    
+  }
+
+  .summaryItem {
+    display: flex;
+    padding: 20px;
+    border-radius: 15px;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--secondary-lighter-color);
+  }
+
+  .summaryItem h1 {
+    font-size: .8rem;
+    font-family: var(--font-poppins-light);
+
+  }
+
+  .summaryItem span {
+    font-size: .8rem;
+    font-family: var(--font-poppins-light);
+
+  }
+
+
+
+}
+
+/* using it as global style for larger devices  */
+@media only screen and (min-width: 48em) {
+  .calculatorContainer {
+    align-items: center;
+  }
+
+  .calculatorContainerInner {
+    width: calc(80%);
+  }
+
+  .inputGroup {
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+  }
+
+
+  .summaryGrid {
+    grid-template-columns: 1fr 1fr;
+    
+  }
+
+  .addButton {
+    width: 100px;
+  }
+
+  .ingredientsList {
+    max-height: 400px;
+    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-direction: column;
+  }
+}
+
+/* ipad pro screens & laptop */
+@media only screen and (min-width: 49em) and (max-width: 64em) {
+}
+
+/* large screens : Desktop and 4k screens */
+
+@media only screen and (min-width: 64.063em) and (max-width: 90em) {
+  .calculatorContainerInner {
+    width: calc(50%);
+  }
+}
+
+/* 5k screens and above */
+@media only screen and (min-width: 91em) {
+  .calculatorContainerInner {
+    width: calc(50%);
+  }
+}

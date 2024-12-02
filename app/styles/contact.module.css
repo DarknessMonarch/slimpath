@@ -1,0 +1,238 @@
+@media screen {
+  .formContactContainer {
+    gap: 20px;
+    display: flex;
+    padding: 10px;
+    overflow: hidden;
+    overflow-y: auto;
+    border-radius: 15px;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--background-color);
+    
+  }
+
+  .contactWrapinfo {
+    gap: 10px;
+    height: 100%;
+    display: flex;
+    padding: 10px;
+    border-radius: 15px;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    background-color: var(--background-color);
+    
+  }
+
+  .sectionTitleWrap {
+    gap: 5px;
+    display: flex;
+    padding: 20px 0;
+    flex-direction: column;
+  }
+
+  .sectionTitle {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .sectionTitle h3 {
+    font-size: 1.1rem;
+    color: var(--tertiary-color);
+    font-family: var(--font-poppins-light);
+  }
+
+  .sectionTitleWrap p {
+    font-size: 1rem;
+    color: var(--primary-color);
+  }
+
+
+  .overviewIcon {
+    font-size: 24px;
+    color: var(--tertiary-color);
+  }
+
+
+  .contactWrapS {
+    gap: 20px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .contactInputContainer {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contactLabel {
+    font-size: 1rem;
+    text-transform: capitalize;
+    color: var(--primary-color);
+    font-weight: var(--font-poppins-light);
+  }
+
+  .contactInput {
+    gap: 20px;
+    width: 100%;
+    display: flex;
+    padding: 10px 20px;
+    border-radius: 8px;
+    align-items: center;
+    color: var(--primary-color) ;
+    background-color: var(--light-color);
+  }
+
+
+  .contactInput input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 10px;
+    background: transparent;
+    color: var(--primary-color);
+  }
+
+  .contactInput input::placeholder {
+    font-size: 0.8rem;
+    color: var(--primary-color);
+
+  }
+
+
+
+  .formChangeS {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    cursor: pointer;
+    font-size: 0.9rem;
+    align-items: end;
+    justify-content: end;
+    text-decoration: underline;
+    color: var(--primary-color);
+  }
+
+  .formcontactBtnWrapper {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .formcontactButton {
+    gap: 10px;
+    width: 100%;
+    max-height: 50px;
+    min-height: 50px;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 8px;
+    color: var(--background-color);
+    background-color: var(--tertiary-color);
+  }
+
+  .formcontactButton:hover {
+    background-color: var(--tertiary-light-color);
+  }
+
+
+  .socialContainer {
+    display: flex;
+    padding: 10px 0;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .socialIconWrap {
+    padding: 10px;
+    display: flex;
+    cursor: pointer;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--background-color);
+
+  }
+
+  .socialIconWrap:hover {
+    border: 1px solid var(--tertiary-color);
+  }
+
+  .socialIcon {
+    height: 18px;
+    width: 18px;
+  }
+}
+
+/* using it as global style for larger devices  */
+@media only screen and (min-width: 48em) {
+  .formContactContainer {
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .contactWrap {
+    width: fit-content;
+  }
+
+  .profileImageContain {
+    width: 100px;
+    height: 100px;
+  }
+
+  .contactWrapinfo {
+    gap: 20px;
+    width: 80%;
+    height: auto;
+  }
+
+  .contactWrapS {
+    gap: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .contactInput {
+    padding: 14px;
+  }
+
+  .socialContainer {
+    padding: 10px;
+    justify-content: space-evenly;
+  }
+
+  .socialIcon {
+    height: 24px;
+    width: 24px;
+  }
+
+}
+
+/* ipad pro screens & laptop */
+@media only screen and (min-width: 49em) and (max-width: 64em) {
+  .contactWrapinfo {
+    width: calc(100% / 2);
+  }
+}
+
+/* large screens : Desktop and 4k screens */
+
+@media only screen and (min-width: 64.063em) and (max-width: 90em) {
+  .contactWrapinfo {
+    width: calc(100% / 2);
+  }
+}
+
+/* 5k screens and above */
+@media only screen and (min-width: 91em) {
+  .contactWrapinfo {
+    width: calc(100% / 2);
+  }
+}

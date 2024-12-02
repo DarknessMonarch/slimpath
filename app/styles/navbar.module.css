@@ -1,0 +1,145 @@
+@media screen {
+  .navMain {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    min-height: 50px;
+    height: fit-content;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .navContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: fit-content;
+    justify-content: space-between;
+  }
+  .navContainerRight {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .navContainerRight h1 {
+    font-family: var(--font-outfit-light);
+    color: var(--tertiary-color);
+    font-size: 1.1rem;
+
+  }
+
+  .navContainerRight p {
+    font-size: .8rem;
+    color: var(--dark-color);
+  }
+
+  .navContainerRight h1 span {
+    text-transform: capitalize;
+  }
+
+  .navContainerLeft {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menuIcon {
+    font-size: 30px;
+    color: var(--primary-color);
+  }
+
+  .menuIcon:hover {
+    color: var(--tertiary-color);
+  }
+
+  .searchContainer {
+    gap: 10px;
+    top: 100px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    padding: 0 10px;
+    align-items: center;
+    border-radius: 10px;
+    background: transparent;
+    border: 1px solid var(--dark-color);
+  }
+
+  .searchContainer:hover {
+    color: var(--tertiary-color);
+    border: 1px solid var(--tertiary-color);
+  }
+
+  .searchIcon {
+    font-size: 24px;
+    color: var(--dark-color);
+  }
+
+  .searchContainer:hover .searchIcon {
+    color: var(--tertiary-color);
+  }
+
+  .searchInput {
+    width: 100%;
+    border: none;
+    height: 40px;
+    padding: 10px;
+    outline: none;
+    color: var(--dark-color);
+    background-color: transparent;
+  }
+
+  .desktopSearch {
+    display: none;
+  }
+
+  .mobileSearch {
+    display: flex;
+  }
+
+  .searchInput::placeholder {
+    font-size: 0.8rem;
+    color: var(--dark-color);
+  }
+
+  .navIcon {
+  
+    font-size: 34px;
+    cursor: pointer;
+    color: var(--primary-color);
+  }
+
+  .navIcon:hover {
+    color: var(--tertiary-light-color);
+  }
+
+  .activeNotification {
+    color: var(--tertiary-color);
+
+  }
+}
+
+/* using it as global style for larger devices  */
+@media only screen and (min-width: 48em) {
+  .navMain {
+    padding: 0;
+  }
+
+  .menuIcon {
+    display: none;
+  }
+
+  .desktopSearch {
+    display: flex;
+  }
+
+  .mobileSearch {
+    display: none;
+  }
+
+  .navIcon {
+    font-size: 40px;
+  }
+}

@@ -1,0 +1,78 @@
+@media screen {
+  .paymentContainer {
+    gap: 20px;
+    display: flex;
+    padding: 10px;
+    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 15px;
+    flex-direction: column;
+    border: 1px solid var(--dark-color);
+
+  }
+  .sectionTitle {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .sectionTitle h3 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-family: var(--font-poppins-regular);
+  }
+
+  .overviewIcon {
+    font-size: 24px;
+    color: var(--primary-color);
+  }
+
+  .paymentPaypalImage {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .payController {
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    cursor: pointer;
+    height: fit-content;
+    align-items: center;
+    border-radius: 15px;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    scroll-snap-align: center;
+    background-color: transparent;
+    background-color: var(--background-color);
+  }
+}
+
+/* using it as global style for larger devices  */
+@media only screen and (min-width: 48em) {
+  .paymentContainer {
+    height: 100%;
+  }
+
+  .payController {
+    gap: 10px;
+    width: 400px;
+    min-width: 400px;
+  }
+}
+
+/* ipad pro screens & laptop */
+@media only screen and (min-width: 49em) and (max-width: 64em) {
+}
+
+/* large screens : Desktop and 4k screens */
+
+@media only screen and (min-width: 64.063em) and (max-width: 90em) {
+}
+
+/* 5k screens and above */
+@media only screen and (min-width: 91em) {
+}

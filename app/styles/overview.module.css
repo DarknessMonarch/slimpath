@@ -1,0 +1,216 @@
+@media screen {
+  .overviewSection {
+    gap: 20px;
+    height: 100%;
+    display: flex;
+    padding: 10px;
+    border-radius: inherit;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--background-color);
+  }
+
+  .basicInfo {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sectionTitle {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .sectionTitle h3 {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    font-family: var(--font-poppins-light);
+  }
+
+  .overviewIcon {
+    font-size: 24px;
+    color: var(--secondary-color);
+  }
+
+  .weightInputs {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .inputGroupContainer {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .inputGroup {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+  }
+
+  .inputGroup label {
+    font-size: 0.8rem;
+    text-transform: capitalize;
+    font-family: var(--font-poppins-regular);
+  }
+
+  .errorText {
+    font-size: .7rem;
+    color: var(--tertiary-color);
+  }
+
+  .inputField {
+    width: 100%;
+    height: 40px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--dark-color);
+    border: 1px solid var(--dark-color);
+  }
+
+  .inputField:hover {
+    border: 1px solid var(--tertiary-color);
+  }
+
+  .inputField:focus {
+    color: var(--dark-color);
+    background-color: transparent;
+    border: 1px solid var(--tertiary-color);
+  }
+
+  .inputField:-webkit-autofill,
+  .inputField:-webkit-autofill:hover,
+  .inputField:-webkit-autofill:focus,
+  .inputField:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: var(--dark-color) !important;
+  }
+
+  .inputField::placeholder {
+    font-size: 0.8rem;
+    color: var(--dark-color);
+  }
+
+  .formcontactButton {
+    gap: 10px;
+    width: 100%;
+    max-height: 50px;
+    min-height: 50px;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 8px;
+    color: var(--background-color);
+    background-color: var(--tertiary-color);
+  }
+
+  .formcontactButton:hover {
+    color: var(--background-color);
+    background-color: var(--tertiary-light-color);
+
+  }
+
+  .caloriesSummary {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .totalCalories {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .totalCalories {
+    font-size: 1rem;
+    font-family: var(--font-poppins-light);
+  }
+
+  .mealDistribution {
+    gap: 10px;
+    display: flex;
+    padding: 10px 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    justify-content: flex-start;
+    scroll-snap-type: x mandatory;
+  }
+
+  .distributionCard {
+    gap: 10px;
+    flex-grow: 1;
+    width: 200px;
+    padding: 10px;
+    display: flex;
+    cursor: pointer;
+    min-width: 250px;
+    align-items: center;
+    border-radius: 15px;
+    flex-direction: column;
+    justify-content: center;
+    scroll-snap-align: center;
+    color: var(--background-color);
+    background-color: var(--secondary-color);
+  }
+
+
+  .dashcard:hover {
+    background-color: var(--tertiary-color);
+  }
+
+  .cardTitle {
+    gap: 10px;
+    display: flex;
+    padding: 5px 10px;
+    border-radius: 15px;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--secondary-light-color);
+  }
+
+  .cardTitle h4 {
+    font-size: 1rem;
+    font-family: var(--font-poppins-light);
+  
+
+  }
+
+  .caloriesIcon {
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    color: var(--background-color);
+  }
+}
+
+/* using it as global style for larger devices  */
+@media only screen and (min-width: 48em) {
+    .distributionCard {
+        min-width: 200px;
+    }
+}
+
+/* ipad pro screens & laptop */
+@media only screen and (min-width: 49em) and (max-width: 64em) {
+}
+
+/* large screens : Desktop and 4k screens */
+
+@media only screen and (min-width: 64.063em) and (max-width: 90em) {
+}
+
+/* 5k screens and above */
+@media only screen and (min-width: 91em) {
+}
