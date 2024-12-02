@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import Loader from "@/app/components/loader";
+import Loader from "@/app/components/Loader";
 import styles from "@/app/styles/contact.module.css";
 import toast from "react-hot-toast";
 
