@@ -3,7 +3,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Popup from "@/app/components/Popup";
-import Loader from "@/app/components/loader";
+import Loader from "@/app/components/Loader";
 import { useAuthStore } from "@/app/store/Auth";
 import Referral from "@/app/components/Referral";
 import { useSocialStore } from "@/app/store/Social";

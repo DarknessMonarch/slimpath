@@ -4,7 +4,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Loader from "@/app/components/loader";
+import Loader from "@/app/components/Loader";
 import LogoImg from "@/public/assets/logo.png";
 import { useAuthStore } from "@/app/store/Auth";
 import styles from "@/app/styles/auth.module.css";
