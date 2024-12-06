@@ -3,8 +3,10 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Loader from "@/app/loading";
-import Dropdown from "@/app/components/Dropdown";
+import Popup from "@/app/components/Popup";
 import { useAuthStore } from "@/app/store/Auth";
+import Dropdown from "@/app/components/Dropdown";
+import { useSocialStore } from "@/app/store/Social";
 import { useTrackingStore } from "@/app/store/Tracking";
 import { useRouter } from "next/navigation";
 
@@ -37,7 +39,8 @@ const activityLevels = [
 
 export const Overview = () => {
   const router = useRouter();
-  const { isAuth, userId } = useAuthStore();
+  const { toggleIsOpen } = useSocialStore();
+  const { isAuth, userId, isAuthorized } = useAuthStore();
   const { currentTracking, isLoading, initializeTracking } = useTrackingStore();
 
   const [formData, setFormData] = useState({
@@ -88,6 +91,8 @@ export const Overview = () => {
       toast.error("Please log in to use this feature.");
       router.push("/authentication/login", { scroll: false });
       return;
+    } else if (isAuth && !isAuthorized) {
+      toggleIsOpen();
     }
 
     if (!validateForm()) return;
@@ -283,6 +288,7 @@ export const Overview = () => {
           </div>
         </div>
       )}
+      <Popup content={<Referral />} />
     </div>
   );
 };
