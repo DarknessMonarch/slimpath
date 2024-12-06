@@ -93,7 +93,9 @@ export const Overview = () => {
       router.push("/authentication/login", { scroll: false });
       return;
     } else if (isAuth && !isAuthorized) {
+      toast.error("Please refer two friends to use this feature to get access.");
       toggleIsOpen();
+      return;
     }
 
     if (!validateForm()) return;
@@ -271,21 +273,24 @@ export const Overview = () => {
             <h3>Daily Calorie Summary</h3>
           </div>
           <div className={styles.totalCalories}>
-            <h1>{currentTracking?.dailyCalories}</h1>
+            <h1>{currentTracking.dailyCalories}</h1>
             <span>kcal</span>
           </div>
           <div className={styles.mealDistribution}>
-            {Object.entries(currentTracking?.mealDistribution).map(
-              ([time, calories]) => (
-                <div key={time} className={styles.distributionCard}>
-                  <div className={styles.cardHeader}>
-                    {getIcon(time)}
-                    <h4>{time}</h4>
-                  </div>
-                  <span>{calories} kcal</span>
-                </div>
-              )
-            )}
+            <div className={styles.mealDistribution}>
+              {currentTracking.mealDistribution &&
+                Object.entries(currentTracking.mealDistribution).map(
+                  ([time, calories]) => (
+                    <div key={time} className={styles.distributionCard}>
+                      <div className={styles.cardHeader}>
+                        {getIcon(time)}
+                        <h4>{time}</h4>
+                      </div>
+                      <span>{calories} kcal</span>
+                    </div>
+                  )
+                )}
+            </div>
           </div>
         </div>
       )}
