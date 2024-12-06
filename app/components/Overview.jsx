@@ -251,7 +251,7 @@ export const Overview = () => {
         </form>
       </div>
 
-      {currentTracking !== null ? (
+      {currentTracking === null ? (
         renderEmptyCard()
       ) : (
         <div className={styles.caloriesSummarySection}>
