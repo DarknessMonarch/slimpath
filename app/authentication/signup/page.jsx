@@ -105,7 +105,7 @@ export default function SignUp() {
 
       if (result.success) {
         toast.success(result.message);
-        // router.push("/page/home", { scroll: false });
+        router.push("/page/home", { scroll: false });
       } else {
         toast.error(result.message);
       }

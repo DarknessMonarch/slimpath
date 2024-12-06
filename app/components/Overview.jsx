@@ -148,7 +148,7 @@ export const Overview = () => {
           <div className={styles.formGroup}>
             <div className={styles.inputContainer}>
               <label htmlFor="currentWeight" className={styles.label}>
-                Current Weight (kg)
+                Current Weight (lb)
               </label>
               <input
                 type="text"
@@ -166,7 +166,7 @@ export const Overview = () => {
 
             <div className={styles.inputContainer}>
               <label htmlFor="goalWeight" className={styles.label}>
-                Goal Weight (kg)
+                Goal Weight (lb)
               </label>
               <input
                 type="text"
@@ -204,7 +204,7 @@ export const Overview = () => {
 
             <div className={styles.inputContainer}>
               <label htmlFor="age" className={styles.label}>
-                Age
+                Age 
               </label>
               <input
                 type="text"
@@ -221,7 +221,7 @@ export const Overview = () => {
           <div className={`${styles.formGroup} ${styles.formLastGroup}`}>
             <div className={styles.inputContainer}>
               <label htmlFor="height" className={styles.label}>
-                Height (cm)
+                Height (ft)
               </label>
               <input
                 type="text"

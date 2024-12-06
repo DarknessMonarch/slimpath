@@ -272,6 +272,7 @@ export const useAuthStore = create(
           }
 
           const response = await fetch(`${SERVER_API}/auth/profile-image`, {
+            credentials: 'include',
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
