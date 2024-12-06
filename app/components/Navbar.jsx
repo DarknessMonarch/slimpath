@@ -4,11 +4,12 @@ import toast from "react-hot-toast";
 import { useAuthStore } from "@/app/store/Auth";
 import { useDrawerStore } from "@/app/store/Drawer";
 import styles from "@/app/styles/navbar.module.css";
-import { useNotificationStore } from "@/app/store/Notification";
+import { useTrackingStore } from "@/app/store/Tracking";
 import { useEffect, useState, useCallback } from "react";
-import { useRouter, usePathname } from "next/navigation";
-
 import { RiMenu4Fill as MenuIcon } from "react-icons/ri";
+import { useRouter, usePathname } from "next/navigation";
+import { useNotificationStore } from "@/app/store/Notification";
+
 
 import {
   IoNotificationsCircle as NotificationOnIcon,
@@ -19,6 +20,7 @@ import { HiOutlineLogout as LogoutIcon } from "react-icons/hi";
 export default function NavbarComponent() {
   const { isAuth, username, clearUser } = useAuthStore();
   const [isMobile, setIsMobile] = useState(false);
+  const { clearTracking } = useTrackingStore();
   const { isAllowed } = useNotificationStore();
   const { toggleOpen } = useDrawerStore();
   const pathname = usePathname();
@@ -38,11 +40,12 @@ export default function NavbarComponent() {
   const handleLogout = useCallback(async () => {
     try {
       await clearUser();
+      await clearTracking();
       toast.success("Logged out successfully");
     } catch (error) {
       toast.error("Logout failed");
     }
-  }, [clearUser]);
+  }, [clearUser, clearTracking]);
 
   const openNotification = () => {
     router.push("notification", { scroll: false });

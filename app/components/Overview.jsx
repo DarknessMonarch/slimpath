@@ -8,6 +8,7 @@ import { useAuthStore } from "@/app/store/Auth";
 import Referral from "@/app/components/Referral";
 import Dropdown from "@/app/components/Dropdown";
 import { useSocialStore } from "@/app/store/Social";
+import LogoLoading from "@/app/components/LogoLoading";
 import { useTrackingStore } from "@/app/store/Tracking";
 import { useRouter } from "next/navigation";
 
@@ -123,15 +124,14 @@ export const Overview = () => {
     };
     return icons[time] || icons.Morning;
   };
-
   const renderEmptyCard = () => {
     return (
-      <div
-        className={`${styles.caloriesSummarySection} ${styles.emptyCard} skeleton`}
-      ></div>
+      <div className={`${styles.caloriesSummarySection} ${styles.emptyCard} skeleton`}>
+        <LogoLoading />
+      </div>
     );
   };
-
+  
   return (
     <div className={styles.overviewSection}>
       <div className={styles.basicInfo}>
@@ -274,11 +274,11 @@ export const Overview = () => {
             <h3>Daily Calorie Summary</h3>
           </div>
           <div className={styles.totalCalories}>
-            <h1>{currentTracking.dailyCalories}</h1>
+          <h1>{currentTracking?.dailyCalories ?? 0}</h1>
             <span>kcal</span>
           </div>
           <div className={styles.mealDistribution}>
-            {currentTracking.mealDistribution &&
+            {currentTracking?.mealDistribution &&
               Object.entries(currentTracking.mealDistribution)
                 .filter(([time]) =>
                   ["morning", "afternoon", "night"].includes(time)

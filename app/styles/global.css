@@ -2,15 +2,15 @@
   * {
     /* dynamic style */
     --dark-color: #8b8b8b;
+    --primary-color: #3F3D56;
     --light-color: #e5e9edff;
     --tertiary-color: #fe692f;
-    --tertiary-light-color: #ff8f63;
-    --tertiary-lighter-color: #ffe1d6;
-    --primary-color: #3F3D56;
-    --secondary-color: #ab91f6ff; 
-    --secondary-light-color: #c7b3ff;
-    --secondary-lighter-color: #e1d6ff;
     --background-color:#ffffff;
+    --secondary-color: #ab91f6ff; 
+    --tertiary-light-color: #ff8f63;
+    --secondary-light-color: #c7b3ff;
+    --tertiary-lighter-color: #ffe1d6;
+    --secondary-lighter-color: #e1d6ff;
     --shadow:  rgba(149, 157, 165, 0.2) 0px 8px 24px;
     --shadow-effect: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
@@ -81,28 +81,6 @@
 
   select {
     outline: none;
-  }
-}
-
-.skeleton {
-  cursor: progress;
-  background: linear-gradient(
-    90deg,
-    var(--primary-color) 25%,
-    var(--primary-light-color) 50%,
-    var(--primary-color) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  background-image: var(--background-image);
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
   }
 }
 
