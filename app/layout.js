@@ -106,7 +106,7 @@ export default function RootLayout({ children }) {
             className: "",
             duration: 8000,
             style: {
-              background: "#ff8f63",
+              background: "#fe692f",
               color: "#ffffff",
             },
           }}

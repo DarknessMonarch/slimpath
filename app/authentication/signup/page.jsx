@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import Loader from "@/app/components/Loader";
 import LogoImg from "@/public/assets/logo.png";
+import { useAuthStore } from "@/app/store/Auth";
 import styles from "@/app/styles/auth.module.css";
 import auth1Image from "@/public/assets/auth1Image.jpg";
 import auth2Image from "@/public/assets/auth2Image.jpg";
@@ -13,33 +14,37 @@ import auth4Image from "@/public/assets/auth4Image.jpg";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import {
-  FiEye as ShowPasswordIcon,
-  FiEyeOff as HidePasswordIcon,
-} from "react-icons/fi";
+  FaRegEye as ShowPasswordIcon,
+  FaRegEyeSlash as HidePasswordIcon,
+} from "react-icons/fa";
 import { FaRegUser as UserNameIcon } from "react-icons/fa6";
-import { MdOutlineVpnKey as PasswordIcon, MdOutlineEmail as EmailIcon } from "react-icons/md";
-
-const SERVER_API = process.env.NEXT_PUBLIC_SERVER_API;
+import {
+  MdOutlineVpnKey as PasswordIcon,
+  MdOutlineEmail as EmailIcon,
+} from "react-icons/md";
 
 export default function SignUp() {
-  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [termsError, setTermsError] = useState("");
   const [referral, setReferral] = useState(null);
+  const [terms, setTerms] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const register = useAuthStore((state) => state.register);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
-  const [errors, setErrors] = useState({});
   const images = [auth1Image, auth2Image, auth3Image, auth4Image];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Rotate background images
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -48,13 +53,17 @@ export default function SignUp() {
     return () => clearInterval(interval);
   }, [images.length]);
 
-  // Handle referral from query params
   useEffect(() => {
     const referralParam = searchParams.get("referral");
     if (referralParam) {
       setReferral(referralParam);
     }
   }, [searchParams]);
+
+  const handleTermsChange = (event) => {
+    setTerms(event.target.checked);
+    setTermsError("");
+  };
 
   const togglePasswordVisibility = (field) => {
     if (field === "password") {
@@ -64,73 +73,44 @@ export default function SignUp() {
     }
   };
 
-  const validatePassword = (password) => {
-    const errors = [];
-    if (password.length < 8) errors.push("Password must be at least 8 characters long");
-    if (!/(?=.*[a-z])/.test(password)) errors.push("Password must contain at least one lowercase letter");
-    if (!/(?=.*[A-Z])/.test(password)) errors.push("Password must contain at least one uppercase letter");
-    if (!/(?=.*\d)/.test(password)) errors.push("Password must contain at least one number");
-    if (!/(?=.*[!@#$%^&*])/.test(password))
-      errors.push("Password must contain at least one special character (!@#$%^&*)");
-    return errors;
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    if (name === "password") {
-      setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
-    } else {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+    if (name === "confirmPassword" || name === "password") {
+      setPasswordError("");
     }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.username.trim()) newErrors.username = "Username is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid";
-
-    const passwordErrors = validatePassword(formData.password);
-    if (passwordErrors.length > 0) newErrors.password = passwordErrors;
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+
+    if (!terms) {
+      setTermsError("You must accept the terms and conditions");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
 
     setIsLoading(true);
     try {
       const { confirmPassword, ...dataToSend } = formData;
-
-      // Add referral if available
       if (referral) {
         dataToSend.referredBy = referral;
       }
 
-      const response = await fetch(`${SERVER_API}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const result = await register(dataToSend);
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Sign up failed");
-
-      toast.success("Sign up successful! Please check your email for verification.");
-      router.push("/home");
+      if (result.success) {
+        toast.success(result.message);
+        // router.push("/page/home", { scroll: false });
+      } else {
+        toast.error(result.message);
+      }
     } catch (error) {
-      toast.error(error.message || "Sign up failed");
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -151,13 +131,18 @@ export default function SignUp() {
       </div>
       <div className={styles.authWrapper}>
         <form onSubmit={handleSubmit} className={styles.formContainer}>
-          <div className={styles.formLogo}>
-            <Image className={styles.logo} src={LogoImg} alt="Logo" width={50} priority />
+          <Image
+            className={styles.logo}
+            src={LogoImg}
+            alt="Logo"
+            width={100}
+            priority
+          />
+          <div>
+            <h1>Sign up</h1>
+            <p>Enter your account details</p>
           </div>
-          <h1>Sign up</h1>
-          <p>Enter your account details</p>
 
-          {/* Username */}
           <div className={styles.authInput}>
             <UserNameIcon className={styles.authIcon} />
             <input
@@ -168,9 +153,7 @@ export default function SignUp() {
               placeholder="Username"
             />
           </div>
-          {errors.username && <p className={styles.errorText}>{errors.username}</p>}
 
-          {/* Email */}
           <div className={styles.authInput}>
             <EmailIcon className={styles.authIcon} />
             <input
@@ -181,9 +164,7 @@ export default function SignUp() {
               placeholder="Email"
             />
           </div>
-          {errors.email && <p className={styles.errorText}>{errors.email}</p>}
 
-          {/* Password */}
           <div className={styles.authInput}>
             <PasswordIcon className={styles.authIcon} />
             <input
@@ -193,19 +174,15 @@ export default function SignUp() {
               onChange={handleInputChange}
               placeholder="Password"
             />
-            <button type="button" onClick={() => togglePasswordVisibility("password")}>
-              {showPassword ? <HidePasswordIcon /> : <ShowPasswordIcon />}
-            </button>
+            <div onClick={() => togglePasswordVisibility("password")}>
+              {showPassword ? (
+                <HidePasswordIcon className={styles.authIcon} />
+              ) : (
+                <ShowPasswordIcon className={styles.authIcon} />
+              )}
+            </div>
           </div>
-          {errors.password &&
-            Array.isArray(errors.password) &&
-            errors.password.map((error, index) => (
-              <p key={index} className={styles.errorText}>
-                {error}
-              </p>
-            ))}
 
-          {/* Confirm Password */}
           <div className={styles.authInput}>
             <PasswordIcon className={styles.authIcon} />
             <input
@@ -215,15 +192,46 @@ export default function SignUp() {
               onChange={handleInputChange}
               placeholder="Confirm Password"
             />
-            <button type="button" onClick={() => togglePasswordVisibility("confirmPassword")}>
-              {showConfirmPassword ? <HidePasswordIcon /> : <ShowPasswordIcon />}
-            </button>
+            <div onClick={() => togglePasswordVisibility("confirmPassword")}>
+              {showConfirmPassword ? (
+                <HidePasswordIcon className={styles.authIcon} />
+              ) : (
+                <ShowPasswordIcon className={styles.authIcon} />
+              )}
+            </div>
           </div>
-          {errors.confirmPassword && <p className={styles.errorText}>{errors.confirmPassword}</p>}
+          {passwordError && <p className={styles.errorText}>{passwordError}</p>}
+          <div className={styles.formChange}>
+            <div className={styles.termsContainer}>
+              <input
+                type="checkbox"
+                id="terms"
+                checked={terms}
+                onChange={handleTermsChange}
+              />
+              <label htmlFor="terms">Accept terms and conditions</label>
+            </div>
+            {termsError && <p className={styles.errorText}>{termsError}</p>}
+          </div>
 
-          <button type="submit" className={styles.authButton} disabled={isLoading}>
-            {isLoading ? <Loader /> : "Sign up"}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`${styles.formAuthButton} ${
+              isLoading ? styles.activeFormAuthButton : ""
+            }`}
+          >
+          {isLoading ? <Loader /> : "Sign up"}
           </button>
+          <h3>
+            Already have an account?{" "}
+            <span
+              className={styles.btnLogin}
+              onClick={() => router.push("login")}
+            >
+              Login
+            </span>
+          </h3>
         </form>
       </div>
     </div>

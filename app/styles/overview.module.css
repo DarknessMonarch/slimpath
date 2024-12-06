@@ -39,29 +39,73 @@
     flex-direction: column;
   }
 
-  .inputGroupContainer {
-    gap: 10px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-  }
-
-  .inputGroup {
+  .formContainer {
     gap: 10px;
     width: 100%;
     display: flex;
     flex-direction: column;
-
   }
 
-  .inputGroup label {
+  .formGroup {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    align-items: top;
+  }
+
+  .formLastGroup {
+    flex-direction: column;
+  }
+
+  .inputContainer {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .selectField {
+    width: 100%;
+    height: 40px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    appearance: none;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid var(--dark-color);
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  .selectField:hover {
+    background-color: var(--background-color);
+    border-color: var(--tertiary-color);
+  }
+
+  .selectField option {
+    background: transparent;
+    color: var(--dark-color);
+  }
+
+  .selectField option:checked {
+    background: var(--tertiary-color);
+    color: var(--background-color);
+  }
+
+  .inputField {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .inputContainer label {
     font-size: 0.8rem;
     text-transform: capitalize;
-    font-family: var(--font-poppins-regular);
+    font-family: var(--font-poppins-medium);
   }
 
   .errorText {
-    font-size: .7rem;
+    font-size: 0.7rem;
     color: var(--tertiary-color);
   }
 
@@ -115,7 +159,6 @@
   .formcontactButton:hover {
     color: var(--background-color);
     background-color: var(--tertiary-light-color);
-
   }
 
   .caloriesSummary {
@@ -165,7 +208,6 @@
     background-color: var(--secondary-color);
   }
 
-
   .dashcard:hover {
     background-color: var(--tertiary-color);
   }
@@ -183,8 +225,6 @@
   .cardTitle h4 {
     font-size: 1rem;
     font-family: var(--font-poppins-light);
-  
-
   }
 
   .caloriesIcon {
@@ -193,13 +233,22 @@
     font-size: 24px;
     color: var(--background-color);
   }
+
+  /* when their is no data  */
+  .emptyCard {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 /* using it as global style for larger devices  */
 @media only screen and (min-width: 48em) {
-    .distributionCard {
-        min-width: 200px;
-    }
+  .distributionCard {
+    min-width: 200px;
+  }
+  .formLastGroup {
+    flex-direction: row;
+  }
 }
 
 /* ipad pro screens & laptop */

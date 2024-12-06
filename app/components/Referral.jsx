@@ -6,7 +6,6 @@ import { useState, useEffect, useCallback } from "react";
 import styles from "@/app/styles/socialLink.module.css";
 import { IoShareSocialSharp as ShareIcon } from "react-icons/io5";
 
-
 import Instagram from "@/public/icons/instagram.svg";
 import Whatsapp from "@/public/icons/whatsapp.svg";
 import LinkedIn from "@/public/icons/linkedIn.svg";
@@ -15,14 +14,15 @@ import Twitter from "@/public/icons/twitter.svg";
 import Youtube from "@/public/icons/youtube.svg";
 
 export default function Referral() {
-  const { isAuth, username } = useAuthStore.getState();
+  const { referralCode } = useAuthStore();
   const [shareLink, setShareLink] = useState("");
   const [isCopied, setIsCopied] = useState(false);
+  const websiteUrl = "https://slimpath.vercel.app";
 
   const generateShareLink = useCallback(() => {
-      const link = `https://www.slimpath.com/page/authentication/?referral=chicken`;
-      setShareLink(link);
-  }, []);
+    const link = `${websiteUrl}/authenticate/signup?referral=${referralCode}`;
+    setShareLink(link);
+  }, [referralCode]);
 
   useEffect(() => {
     generateShareLink();
@@ -70,56 +70,57 @@ export default function Referral() {
   ];
 
   return (
-        <div className={styles.popupContent}>
-          <div className={styles.popupContentInner}>
-            <div className={styles.popupHeader}>
-              <h1>Social share</h1>
-              <p>Share this link to five people to get access to Slimpath for life</p>
-            </div>
-            <div className={styles.socialContainer}>
-              {socialData.map((data, index) => (
-                <div
-                  className={styles.socialIconWrap}
-                  key={index}
-                  onClick={() => openSocialLink(data.link)}
-                >
-                  <Image
-                    className={styles.socialIcon}
-                    src={data.icons}
-                    alt={data.name}
-                    height={30}
-                    priority={true}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.copyInner}>
-            <h1>Copy link</h1>
-            <div className={styles.copyField}>
-              <LinkIcon
-                className={styles.linkIcon}
-                alt="link icon"
-                width={24}
-                height={24}
-              />
-              <p>{shareLink}</p>
-            </div>
-            <button className={styles.formPromoteBtn} onClick={copyLink}>
-              {isCopied ? (
-                "Copied!"
-              ) : (
-                <ShareIcon
-                  className={styles.shareIcon}
-                  alt="share icon"
-                  width={24}
-                  height={24}
-                />
-              )}
-            </button>
-          </div>
+    <div className={styles.popupContent}>
+      <div className={styles.popupContentInner}>
+        <div className={styles.popupHeader}>
+          <h1>Social share</h1>
+          <p>
+            Share this link to five people to get access to Slimpath for life
+          </p>
         </div>
-     
+        <div className={styles.socialContainer}>
+          {socialData.map((data, index) => (
+            <div
+              className={styles.socialIconWrap}
+              key={index}
+              onClick={() => openSocialLink(data.link)}
+            >
+              <Image
+                className={styles.socialIcon}
+                src={data.icons}
+                alt={data.name}
+                height={30}
+                priority={true}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.copyInner}>
+        <h1>Copy link</h1>
+        <div className={styles.copyField}>
+          <LinkIcon
+            className={styles.linkIcon}
+            alt="link icon"
+            width={24}
+            height={24}
+          />
+          <p>{shareLink}</p>
+        </div>
+        <button className={styles.formPromoteBtn} onClick={copyLink}>
+          {isCopied ? (
+            "Copied!"
+          ) : (
+            <ShareIcon
+              className={styles.shareIcon}
+              alt="share icon"
+              width={24}
+              height={24}
+            />
+          )}
+        </button>
+      </div>
+    </div>
   );
 }

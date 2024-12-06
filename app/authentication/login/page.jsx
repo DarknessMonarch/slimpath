@@ -11,85 +11,61 @@ import styles from "@/app/styles/auth.module.css";
 import auth1Image from "@/public/assets/auth1Image.jpg";
 
 import {
-  FiEye as ShowPasswordIcon,
-  FiEyeOff as HidePasswordIcon,
-} from "react-icons/fi";
-import { FaRegUser as usernameIcon } from "react-icons/fa6";
+  FaRegEye as ShowPasswordIcon,
+  FaRegEyeSlash as HidePasswordIcon,
+} from "react-icons/fa";
 import {
   MdOutlineVpnKey as PasswordIcon,
+  MdOutlineEmail as EmailIcon,
 } from "react-icons/md";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser, toggleAuth } = useAuthStore();
+  const [termsError, setTermsError] = useState("");
   const [terms, setTerms] = useState(false);
   const router = useRouter();
+  const login = useAuthStore((state) => state.login);
 
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
-  const SERVER_API = process.env.NEXT_PUBLIC_SERVER_API;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleTermsChange = (event) => {
     setTerms(event.target.checked);
-    setErrors((prev) => ({ ...prev, terms: "" }));
+    setTermsError("");
   };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.username.trim())
-      newErrors.username = "username ";
-    if (!terms) newErrors.terms = "You must accept the terms and conditions";
-    if (!formData.password) newErrors.password = "Password is required";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   async function onSubmit(e) {
     e.preventDefault();
-    if (!validateForm()) return;
+
+    if (!terms) {
+      setTermsError("You must accept the terms and conditions");
+      return;
+    }
 
     setIsLoading(true);
-
     try {
-      const response = await fetch(`${SERVER_API}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await login(formData.email, formData.password);
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Login failed");
+      if (result.success) {
+        toast.success("Welcome back!");
+        router.push("/page/home", { scroll: false });
+      } else {
+        toast.error(result.message);
       }
-
-      const responseData = await response.json();
-      const { token, refreshToken, user } = responseData.data;
-
-      // Save user and token to state
-      setUser({ ...user, token, refreshToken });
-      toggleAuth();
-
-      toast.success("Welcome back!");
-      router.push("/page/home", { scroll: false });
     } catch (error) {
-      toast.error(error.message || "Login failed, please try again");
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -105,7 +81,7 @@ export default function Login() {
           layout="fill"
           quality={100}
           objectFit="cover"
-          priority={true}
+          priority
         />
       </div>
       <div className={styles.authWrapper}>
@@ -116,29 +92,25 @@ export default function Login() {
               src={LogoImg}
               alt="logo"
               width={50}
-              priority={true}
+              priority
             />
           </div>
           <div className={styles.formHeader}>
             <h1>Login</h1>
             <p>Enter your account details</p>
           </div>
-          {/* username/Email */}
+
           <div className={styles.authInput}>
-            <usernameIcon className={styles.authIcon} />
+            <EmailIcon className={styles.authIcon} />
             <input
-              type="text"
-              name="username"
-              value={formData.username}
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleInputChange}
-              placeholder="username"
+              placeholder="Email"
             />
           </div>
-          {errors.username && (
-            <p className={styles.errorText}>{errors.username}</p>
-          )}
 
-          {/* Password */}
           <div className={styles.authInput}>
             <PasswordIcon className={styles.authIcon} />
             <input
@@ -153,14 +125,14 @@ export default function Login() {
               className={styles.showBtn}
               onClick={toggleShowPassword}
             >
-              {showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon />}
+              {showPassword ? (
+                <ShowPasswordIcon className={styles.authIcon} />
+              ) : (
+                <HidePasswordIcon className={styles.authIcon} />
+              )}
             </button>
           </div>
-          {errors.password && (
-            <p className={styles.errorText}>{errors.password}</p>
-          )}
 
-          {/* Terms */}
           <div className={styles.formChange}>
             <div className={styles.termsContainer}>
               <input
@@ -169,12 +141,10 @@ export default function Login() {
                 checked={terms}
                 onChange={handleTermsChange}
               />
-              <label htmlFor="terms">
-                Accept terms and conditions
-              </label>
+              <label htmlFor="terms">Accept terms and conditions</label>
             </div>
-            {errors.terms && <p className={styles.errorText}>{errors.terms}</p>}
-            <span onClick={() => router.push("/resetcode")}>
+            {termsError && <p className={styles.errorText}>{termsError}</p>}
+            <span onClick={() => router.push("forgot")}>
               Forgot Password
             </span>
           </div>

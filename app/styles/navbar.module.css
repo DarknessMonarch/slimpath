@@ -26,11 +26,10 @@
     font-family: var(--font-outfit-light);
     color: var(--tertiary-color);
     font-size: 1.1rem;
-
   }
 
   .navContainerRight p {
-    font-size: .8rem;
+    font-size: 0.8rem;
     color: var(--dark-color);
   }
 
@@ -105,8 +104,7 @@
   }
 
   .navIcon {
-  
-    font-size: 34px;
+    font-size: 32px;
     cursor: pointer;
     color: var(--primary-color);
   }
@@ -117,7 +115,6 @@
 
   .activeNotification {
     color: var(--tertiary-color);
-
   }
 }
 
@@ -139,7 +136,5 @@
     display: none;
   }
 
-  .navIcon {
-    font-size: 40px;
-  }
+
 }

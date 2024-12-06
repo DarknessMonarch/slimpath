@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import Popup from "@/app/components/Popup";
-import Loader from "@/app/components/Loader";
+import Loader from "@/app/loading";
+import Dropdown from "@/app/components/Dropdown";
 import { useAuthStore } from "@/app/store/Auth";
-import Referral from "@/app/components/Referral";
-import { useSocialStore } from "@/app/store/Social";
-import styles from "@/app/styles/overview.module.css";
+import { useTrackingStore } from "@/app/store/Tracking";
 import { useRouter } from "next/navigation";
+
 import {
   IoSunny as MorningIcon,
   IoMoon as MoonIcon,
@@ -16,18 +15,61 @@ import {
 } from "react-icons/io5";
 import { IoMdPartlySunny as AfternoonIcon } from "react-icons/io";
 import { ImSpoonKnife as CalorieIcon } from "react-icons/im";
+import { IoFitness as ActivityIcon } from "react-icons/io5";
+import styles from "@/app/styles/overview.module.css";
 
-export const Overview = ({ basicInfo, caloriesSummary, updateBasicInfo }) => {
+const activityLevels = [
+  { code: "sedentary", name: "Sedentary (little or no exercise)" },
+  {
+    code: "lightlyActive",
+    name: "Lightly Active (light exercise 1-3 days/week)",
+  },
+  {
+    code: "moderatelyActive",
+    name: "Moderately Active (moderate exercise 3-5 days/week)",
+  },
+  { code: "veryActive", name: "Very Active (hard exercise 6-7 days/week)" },
+  {
+    code: "extraActive",
+    name: "Extra Active (very hard exercise & physical job)",
+  },
+];
+
+export const Overview = () => {
   const router = useRouter();
-  const { isOpen, toggleIsOpen } = useSocialStore();
-  const [isLoading, setIsLoading] = useState(false);
-  const { isAuth, isAuthorized, toggleAuth } = useAuthStore();
+  const { isAuth, userId } = useAuthStore();
+  const { currentTracking, isLoading, initializeTracking } = useTrackingStore();
+
   const [formData, setFormData] = useState({
-    weight: "",
-    goal: "",
-    duration: "",
+    currentWeight: "",
+    goalWeight: "",
+    durationWeeks: "",
+    age: "",
+    height: "",
+    activityLevel: "lightlyActive",
   });
+
   const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    const fields = {
+      currentWeight: "Current weight",
+      goalWeight: "Goal weight",
+      durationWeeks: "Duration",
+      age: "Age",
+      height: "Height",
+    };
+
+    Object.entries(fields).forEach(([key, label]) => {
+      if (!formData[key]) {
+        newErrors[key] = `${label} is required`;
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,13 +77,8 @@ export const Overview = ({ basicInfo, caloriesSummary, updateBasicInfo }) => {
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.weight.trim())
-      newErrors.weight = "Current weight is required";
-    if (!formData.goal.trim()) newErrors.goal = "Goal weight is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleActivitySelect = (option) => {
+    setFormData((prev) => ({ ...prev, activityLevel: option.code }));
   };
 
   const handleSubmit = async (e) => {
@@ -50,62 +87,40 @@ export const Overview = ({ basicInfo, caloriesSummary, updateBasicInfo }) => {
     if (!isAuth) {
       toast.error("Please log in to use this feature.");
       router.push("/authentication/login", { scroll: false });
-    } else if (isAuth && !isAuthorized) {
-      toggleIsOpen();
+      return;
     }
 
     if (!validateForm()) return;
 
-    setIsLoading(true);
-    try {
-      await updateBasicInfo(formData);
-      toast.success("Information updated successfully!");
-    } catch (error) {
-      toast.error("Failed to update information. Please try again.");
-    } finally {
-      setIsLoading(false);
+    const result = await initializeTracking({
+      userId,
+      ...formData,
+    });
+
+    if (result.success) {
+      toast.success("Analysis completed successfully!");
     }
   };
 
-  const getIcon = (day) => {
-    switch (day) {
-      case "Morning":
-        return (
-          <MorningIcon
-            height={40}
-            width={40}
-            className={styles.caloriesIcon}
-            aria-label="Morning icon"
-          />
-        );
-      case "Afternoon":
-        return (
-          <AfternoonIcon
-            height={40}
-            width={40}
-            className={styles.caloriesIcon}
-            aria-label="Afternoon icon"
-          />
-        );
-      case "Night":
-        return (
-          <MoonIcon
-            height={40}
-            width={40}
-            className={styles.caloriesIcon}
-            aria-label="Night icon"
-          />
-        );
-      default:
-        return (
-          <MorningIcon
-            height={40}
-            width={40}
-            className={styles.caloriesIcon}
-            aria-label="Default icon"
-          />
-        );
-    }
+  const getIcon = (time) => {
+    const icons = {
+      Morning: (
+        <MorningIcon className={styles.icon} aria-label="Morning icon" />
+      ),
+      Afternoon: (
+        <AfternoonIcon className={styles.icon} aria-label="Afternoon icon" />
+      ),
+      Night: <MoonIcon className={styles.icon} aria-label="Night icon" />,
+    };
+    return icons[time] || icons.Morning;
+  };
+
+  const renderEmptyCard = () => {
+    return (
+      <div
+        className={`${styles.caloriesSummarySection} ${styles.emptyCard} skeleton`}
+      ></div>
+    );
   };
 
   return (
@@ -120,48 +135,109 @@ export const Overview = ({ basicInfo, caloriesSummary, updateBasicInfo }) => {
           />
           <h3>Basic Information</h3>
         </div>
-        <form className={styles.weightInputs} onSubmit={handleSubmit}>
-          <div className={styles.inputGroup}>
-            <label htmlFor="weight">Current Weight (kg)</label>
-            <input
-              type="text"
-              name="weight"
-              id="weight"
-              placeholder="300"
-              value={formData.weight}
-              onChange={handleInputChange}
-              className={styles.inputField}
-            />
-            {errors.weight && (
-              <p className={styles.errorText}>{errors.weight}</p>
-            )}
-          </div>
-          <div className={styles.inputGroupContainer}>
-            <div className={styles.inputGroup}>
-              <label htmlFor="goal">Goal Weight (kg)</label>
+        <form onSubmit={handleSubmit} className={styles.formContainer}>
+          <div className={styles.formGroup}>
+            <div className={styles.inputContainer}>
+              <label htmlFor="currentWeight" className={styles.label}>
+                Current Weight (kg)
+              </label>
               <input
-                type="text"
-                name="goal"
-                id="goal"
-                placeholder="500"
-                value={formData.goal}
+                type="number"
+                name="currentWeight"
+                id="currentWeight"
+                value={formData.currentWeight}
                 onChange={handleInputChange}
                 className={styles.inputField}
+                placeholder="70"
               />
-              {errors.goal && <p className={styles.errorText}>{errors.goal}</p>}
+              {errors.currentWeight && (
+                <p className={styles.errorText}>{errors.currentWeight}</p>
+              )}
             </div>
-            <div className={styles.inputGroup}>
-              <label htmlFor="goal">Duration (weeks)</label>
+
+            <div className={styles.inputContainer}>
+              <label htmlFor="goalWeight" className={styles.label}>
+                Goal Weight (kg)
+              </label>
               <input
-                type="text"
-                name="duration"
-                id="duration"
-                placeholder="2"
-                value={formData.duration}
+                type="number"
+                name="goalWeight"
+                id="goalWeight"
+                value={formData.goalWeight}
                 onChange={handleInputChange}
                 className={styles.inputField}
+                placeholder="65"
               />
-              {errors.goal && <p className={styles.errorText}>{errors.goal}</p>}
+              {errors.goalWeight && (
+                <p className={styles.errorText}>{errors.goalWeight}</p>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.inputContainer}>
+              <label htmlFor="durationWeeks" className={styles.label}>
+                Duration (weeks)
+              </label>
+              <input
+                type="number"
+                name="durationWeeks"
+                id="durationWeeks"
+                value={formData.durationWeeks}
+                onChange={handleInputChange}
+                className={styles.inputField}
+                placeholder="12"
+              />
+              {errors.durationWeeks && (
+                <p className={styles.errorText}>{errors.durationWeeks}</p>
+              )}
+            </div>
+
+            <div className={styles.inputContainer}>
+              <label htmlFor="age" className={styles.label}>
+                Age
+              </label>
+              <input
+                type="number"
+                name="age"
+                id="age"
+                value={formData.age}
+                onChange={handleInputChange}
+                className={styles.inputField}
+                placeholder="30"
+              />
+              {errors.age && <p className={styles.errorText}>{errors.age}</p>}
+            </div>
+          </div>
+          <div className={`${styles.formGroup} ${styles.formLastGroup}`}>
+            <div className={styles.inputContainer}>
+              <label htmlFor="height" className={styles.label}>
+                Height (cm)
+              </label>
+              <input
+                type="number"
+                name="height"
+                id="height"
+                value={formData.height}
+                onChange={handleInputChange}
+                className={styles.inputField}
+                placeholder="170"
+              />
+              {errors.height && (
+                <p className={styles.errorText}>{errors.height}</p>
+              )}
+            </div>
+
+            <div className={styles.inputContainer}>
+              <label htmlFor="activityLevel" className={styles.label}>
+                Activity Level
+              </label>
+              <Dropdown
+                options={activityLevels}
+                onSelect={handleActivitySelect}
+                Icon={<ActivityIcon className={styles.dropdownIcon} />}
+                dropPlaceHolder="Select activity level"
+              />
             </div>
           </div>
 
@@ -170,40 +246,43 @@ export const Overview = ({ basicInfo, caloriesSummary, updateBasicInfo }) => {
             className={styles.formcontactButton}
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : "Get analysis"}
+            {isLoading ? <Loader /> : "Get Analysis"}
           </button>
         </form>
       </div>
 
-      <div className={styles.caloriesSummary}>
-        <div className={styles.sectionTitle}>
-          <CalorieIcon
-            height={40}
-            width={40}
-            className={styles.overviewIcon}
-            aria-label="Calorie icon"
-          />
-          <h3>Daily Calorie Summary</h3>
-        </div>
-        <div className={styles.totalCalories}>
-          <h1>{caloriesSummary.total}</h1>
-          <span>kcal</span>
-        </div>
-        <div className={styles.mealDistribution}>
-          {Object.entries(caloriesSummary.distribution).map(
-            ([time, calories]) => (
-              <div key={time} className={styles.distributionCard}>
-                <div className={styles.cardTitle}>
-                  {getIcon(time.charAt(0).toUpperCase() + time.slice(1))}
-                  <h4>{time.charAt(0).toUpperCase() + time.slice(1)}</h4>
+      {currentTracking !== null ? (
+        renderEmptyCard()
+      ) : (
+        <div className={styles.caloriesSummarySection}>
+          <div className={styles.sectionHeader}>
+            <CalorieIcon
+              height={40}
+              width={40}
+              className={styles.icon}
+              aria-label="Calorie icon"
+            />
+            <h3>Daily Calorie Summary</h3>
+          </div>
+          <div className={styles.totalCalories}>
+            <h1>{currentTracking.dailyCalories}</h1>
+            <span>kcal</span>
+          </div>
+          <div className={styles.mealDistribution}>
+            {Object.entries(currentTracking.mealDistribution).map(
+              ([time, calories]) => (
+                <div key={time} className={styles.distributionCard}>
+                  <div className={styles.cardHeader}>
+                    {getIcon(time)}
+                    <h4>{time}</h4>
+                  </div>
+                  <span>{calories} kcal</span>
                 </div>
-                <span>{calories} kcal</span>
-              </div>
-            )
-          )}
+              )
+            )}
+          </div>
         </div>
-      </div>
-      <Popup content={<Referral />} />
+      )}
     </div>
   );
 };

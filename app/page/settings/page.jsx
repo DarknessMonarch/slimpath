@@ -3,13 +3,11 @@
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
-import Loader from "@/app/components/Loader";
-import { useAuthStore } from "@/app/store/Auth";
+import ProfileImg from "@/public/assets/profile.jpg";
 import { useState, useEffect, useRef } from "react";
-import Profile from "@/public/assets/auth1Image.jpg";
-import styles from "@/app/styles/settings.module.css";
-// import { getUserDetails } from "@/app/hooks/userDetails";
+import { useAuthStore } from "@/app/store/Auth";
 
+// Icons
 import {
   FiEye as ShowPasswordIcon,
   FiEyeOff as HidePasswordIcon,
@@ -21,108 +19,38 @@ import {
   MdOutlineEmail as EmailIcon,
   MdModeEdit as EditIcon,
 } from "react-icons/md";
+import { useRouter } from "next/navigation";
+
+import Loader from "@/app/components/Loader";
+import styles from "@/app/styles/settings.module.css";
 
 export default function SettingsPage() {
-  const [profileImage, setProfileImage] = useState(Profile);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [codeSent, setCodeSent] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const [errors, setErrors] = useState({});
-  const dropdownRef = useRef(null);
+  const { isAuth, clearUser } = useAuthStore();
+
+  const router = useRouter();
 
   const {
-    isAuth,
     username,
     email,
-    profile,
-    userType,
-    setUser,
-    clearUser,
-    accessToken,
-    authorized,
+    profileImage,
+    updateUsernameOrEmail,
+    updatePassword: storeUpdatePassword,
+    updateProfileImage: storeUpdateProfileImage,
+    deleteAccount,
   } = useAuthStore();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const fileInputRef = useRef(null);
+
   const [formData, setFormData] = useState({
     username: username,
     email: email,
     oldPassword: "",
     newPassword: "",
     confirmNewPassword: "",
-    verificationCode: "",
   });
-
-  const SERVER_API = process.env.NEXT_PUBLIC_SERVER_API;
-
-  // useEffect(() => {
-  //   if (!isAuth) {
-  //     redirect("/page/home");
-  //   }
-  // }, [isAuth]);
-
-  const fileInputRef = useRef(null);
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const validatePassword = (password) => {
-    const errors = [];
-    if (password.length < 8) {
-      errors.push("Password must be at least 8 characters long");
-    }
-    if (!/(?=.*[a-z])/.test(password)) {
-      errors.push("Password must contain at least one lowercase letter");
-    }
-    if (!/(?=.*[A-Z])/.test(password)) {
-      errors.push("Password must contain at least one uppercase letter");
-    }
-    if (!/(?=.*\d)/.test(password)) {
-      errors.push("Password must contain at least one number");
-    }
-    if (!/(?=.*[!@#$%^&*])/.test(password)) {
-      errors.push(
-        "Password must contain at least one special character (!@#$%^&*)"
-      );
-    }
-    return errors;
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.username.trim()) newErrors.username = "Username is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email))
-      newErrors.email = "Email is invalid";
-
-    if (codeSent && formData.verificationCode.length !== 5) {
-      newErrors.verificationCode = "Verification code must be 5 digits";
-    }
-    if (!formData.country) newErrors.country = "Country is required";
-    if (formData.newPassword) {
-      const passwordErrors = validatePassword(formData.newPassword);
-      if (passwordErrors.length > 0) {
-        newErrors.newPassword = passwordErrors;
-      }
-    }
-    if (formData.newPassword !== formData.confirmNewPassword) {
-      newErrors.confirmNewPassword = "Passwords do not match";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -130,159 +58,143 @@ export default function SettingsPage() {
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
+  useEffect(() => {
+    if (!isAuth) {
+      redirect("home");
+    }
+  }, [isAuth]);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
+      // Check file size
       if (file.size > 5 * 1024 * 1024) {
-        // 5MB size limit
         toast.error("Please upload an image smaller than 5MB.");
         return;
       }
 
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
-
-      const formData = new FormData();
-      formData.append("profile_pic", file);
-
-      try {
-        const response = await fetch(`${SERVER_API}/users/update/profilepic`, {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (response.status === 201) {
-          toast.success("Profile pic updated successfully");
-
-          const data = await response.json().catch(() => null);
-          if (data && data.profile_pic) {
-            setUser({ profile: data.profile_pic });
-          }
-          // await getUserDetails();
-        } else if (response.status === 413) {
-          toast.error(
-            "File is too large. Please upload an image smaller than 5MB."
-          );
-        } else {
-          throw new Error("Unexpected response format. Please try again.");
-        }
-      } catch (error) {
-        console.error("Error updating profile picture:", error);
-        toast.error(error.message || "Failed to update profile picture");
+      // Check file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please upload a valid image file.");
+        return;
       }
-    }
-  };
 
-  const handleIconClick = () => {
-    fileInputRef.current.click();
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = async () => {
+        const base64Image = reader.result;
+
+        setIsLoading(true);
+        try {
+          const response = await storeUpdateProfileImage(base64Image);
+
+          // Check for specific error types
+          if (response.status === "error") {
+            if (response.details?.includes("api_key")) {
+              toast.error(
+                "Server configuration error. Please contact support."
+              );
+            } else {
+              toast.error(response.message || "Failed to update profile image");
+            }
+            return;
+          }
+
+          if (response.success) {
+            toast.success("Profile image updated successfully");
+          } else {
+            toast.error("Failed to update profile image");
+          }
+        } catch (error) {
+          console.error("Profile image update error:", error);
+          toast.error("An error occurred while updating profile image");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+    }
   };
 
   const updateProfile = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
 
     setIsLoading(true);
-
     try {
-      const response = await fetch(`${SERVER_API}/users/update/details`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-        }),
+      const result = await updateUsernameOrEmail({
+        newUsername: formData.username,
+        newEmail: formData.email,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update user details");
+      if (result.success) {
+        toast.success(result.message);
+        await clearUser();
+        router.push("/authentication/login", { scroll: false });
+      } else {
+        toast.error(result.message);
       }
-
-      toast.success("Profile updated successfully");
-      // await getUserDetails();
     } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile");
+      toast.error(error.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const updatePassword = async (e) => {
+  const handleUpdatePassword = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
 
     setIsLoading(true);
-
     try {
-      const response = await fetch(`${SERVER_API}/users/update/password`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          oldPassword: formData.oldPassword,
-          newPassword: formData.newPassword,
-        }),
+      const result = await storeUpdatePassword({
+        oldPassword: formData.oldPassword,
+        newPassword: formData.newPassword,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update password");
+      if (result.success) {
+        toast.success(result.message);
+        setFormData((prev) => ({
+          ...prev,
+          oldPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        }));
+        await clearUser();
+        router.push("/authentication/login", { scroll: false });
+      } else {
+        toast.error(result.message);
       }
-
-      toast.success("Password updated successfully");
-      setFormData((prev) => ({
-        ...prev,
-        oldPassword: "",
-        newPassword: "",
-        confirmNewPassword: "",
-      }));
-      // await getUserDetails();
     } catch (error) {
-      console.error("Error updating password:", error);
-      toast.error("Failed to update password");
+      toast.error(error.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const sendVerificationCode = async () => {
-    if (!validateForm()) return;
+  const handleDeleteAccount = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
 
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${SERVER_API}/users/phone/update/${formData.email}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+    if (confirmDelete) {
+      setIsLoading(true);
+      try {
+        const response = await deleteAccount();
+        if (response.success) {
+          toast.success(response.message);
+          router.push("/authentication/signup", { scroll: false });
+        } else {
+          toast.error(response.message);
         }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to send verification code");
+      } catch (error) {
+        toast.error(error.message || "An error occurred");
+      } finally {
+        setIsLoading(false);
       }
-
-      toast.success("Verification code sent successfully");
-      setCodeSent(true);
-    } catch (error) {
-      console.error("Error sending verification code:", error);
-      toast.error("Failed to send verification code");
-    } finally {
-      setIsLoading(false);
     }
   };
-
-  const handleDeleteAccount = () => {};
-
   return (
     <div className={styles.formSettingContainer}>
       <div className={styles.formSettingContainerInner}>
@@ -297,13 +209,16 @@ export default function SettingsPage() {
           <div className={styles.profileSection}>
             <div className={styles.profileImageContain}>
               <Image
-                src={profile === null ? profileImage : Profile}
+                src={profileImage || ProfileImg}
                 alt={username}
                 className={styles.profileImage}
                 width={100}
                 height={100}
               />
-              <div className={styles.uploadEditIcon} onClick={handleIconClick}>
+              <div
+                className={styles.uploadEditIcon}
+                onClick={() => fileInputRef.current?.click()}
+              >
                 <EditIcon
                   className={styles.editIcon}
                   alt="Edit Icon"
@@ -318,7 +233,7 @@ export default function SettingsPage() {
                 <h3>{email}</h3>
               </div>
               <div
-                onClick={handleDeleteAccount("id")}
+                onClick={handleDeleteAccount}
                 className={styles.deleteAccount}
               >
                 <DeleteIcon
@@ -351,7 +266,7 @@ export default function SettingsPage() {
                   id="username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  placeholder="penguin"
+                  placeholder="Username"
                 />
               </div>
               {errors.username && (
@@ -376,12 +291,15 @@ export default function SettingsPage() {
                   id="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="penguin@gmail.com"
+                  placeholder="Email"
                 />
               </div>
               {errors.email && (
                 <p className={styles.errorText}>{errors.email}</p>
               )}
+              <p className={styles.errorText}>
+                ! After updating your email, you will be logged out
+              </p>
             </div>
 
             <button
@@ -393,7 +311,7 @@ export default function SettingsPage() {
             </button>
           </form>
 
-          <form onSubmit={updatePassword} className={styles.settingWrapS}>
+          <form onSubmit={handleUpdatePassword} className={styles.settingWrapS}>
             <div className={styles.settingInputContainer}>
               <label htmlFor="oldPassword" className={styles.settingLabel}>
                 Old Password
@@ -536,6 +454,9 @@ export default function SettingsPage() {
             >
               {isLoading ? <Loader /> : "Update Password"}
             </button>
+            <p className={styles.errorText}>
+              ! After updating your password, you will be logged out
+            </p>
           </form>
         </div>
       </div>

@@ -15,7 +15,7 @@ export const Meals = ({ meals, updateMeal }) => {
         <h3>Meal Distribution Schedule</h3>
       </div>
       <div className={styles.mealDetails}>
-        {meals.map((meal) => (
+        {/* {meals.map((meal) => (
           <div key={meal.id} className={styles.mealInfo}>
             <h4 >{meal.name}</h4>
 
@@ -27,7 +27,7 @@ export const Meals = ({ meals, updateMeal }) => {
               </div>
             </div>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );

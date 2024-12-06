@@ -11,8 +11,8 @@
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    background-color: var(--primary-color);
-
+    color: var(--background-color);
+    background-color: var(--secondary-color);
   }
 
   .authComponentBgImage {
@@ -32,29 +32,14 @@
     flex-direction: column;
   }
 
-  .formLogo{
-    padding: 10px;
-    display: flex;
-    width: fit-content;
-    align-items: center;
-    border-radius: 15px;
-    justify-content: center;
-    background-color: var(--primary-light-color);
+  .formContainer h1 {
+    font-size: 2rem;
+    font-family: var(--font-poppins-regular);
   }
 
-  .formHeader {
-    gap: 10px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .formHeader h1 {
-    font-size: 1.5rem;
-    font-weight: 400;
-  }
-
-  .formHeader p {
+  .formContainer p {
     font-size: 1rem;
+    font-family: var(--font-poppins-regular);
   }
 
   .authInput {
@@ -62,21 +47,17 @@
     width: 100%;
     display: flex;
     padding: 10px 20px;
-    border-radius: 8px;
     align-items: center;
-    color: var(--light-color);
     background-color: transparent;
-    background-color: var(--primary-light-color);
-    border-bottom: 1px solid var(--dark-light);
-
+    border-bottom: 1px solid var(--background-color);
   }
 
   .authInput:hover {
-    border-bottom: 1px solid var(--tertiary-light);
+    border-bottom: 1px solid var(--primary-color);
   }
 
   .authInput:hover .authIcon {
-    color: var(--tertiary-color);
+    color: var(--primary-color);
   }
 
   .authInput input {
@@ -85,12 +66,11 @@
     outline: none;
     padding: 10px;
     background: transparent;
-    color: var(--light-color);
-
+    color: var(--background-color);
   }
 
   .authInput input:focus {
-    color: var(--light-color);
+    color: var(--background-color);
     background-color: transparent;
   }
 
@@ -99,19 +79,19 @@
   .authInput input:-webkit-autofill:focus,
   .authInput input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
-    -webkit-text-fill-color: var(--light-color) !important;
+    -webkit-text-fill-color: var(--background-color) !important;
   }
 
   .authInput input::placeholder {
     font-size: 0.8rem;
     text-transform: capitalize;
-    color: var(--light-color);
+    color: var(--background-color);
   }
 
   .authInput select {
     width: 100%;
     padding: 10px;
-    color: var(--light-color);
+    color: var(--background-color);
     background-color: transparent;
     border: none;
   }
@@ -126,7 +106,6 @@
     align-items: center;
     flex-direction: column;
     justify-content: center;
-
   }
 
   .dropdownContainer span {
@@ -158,7 +137,7 @@
     position: absolute;
     border-radius: 15px;
     flex-direction: column;
-    background-color: var(--primary-light-color);
+    background-color: var(--primary-background-color);
   }
 
   .dropdownArea span {
@@ -173,8 +152,7 @@
 
   .errorText {
     font-size: 0.8rem;
-    font-family: var(--font-poppins-light);
-    color: var(--tertiary-color);
+    color: var(--primary-color);
   }
 
   .showBtn {
@@ -183,8 +161,9 @@
   }
 
   .authIcon {
-    height: 24px;
-    color: var(--light-color);
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--background-color);
   }
 
   .termsContainer {
@@ -197,12 +176,12 @@
   .termsContainer input[type="checkbox"] {
     padding-left: 5px;
     padding-right: 5px;
-    border-radius: 15px;
     -webkit-appearance: button;
-    border: double 2px var(--light-color);
+    border: double 2px var(--background-color);
     background-color: transparent;
-    color: var(--light-color);
+    color: var(--background-color);
     white-space: nowrap;
+    cursor: pointer;
     overflow: hidden;
     outline: none;
     width: 20px;
@@ -210,9 +189,10 @@
   }
 
   .termsContainer input[type="checkbox"]:checked {
+    cursor: pointer;
     background-color: transparent;
-    border-left-color: var(--light-color);
-    border-right-color: var(--light-color);
+    border-left-color: var(--background-color);
+    border-right-color: var(--background-color);
   }
 
   .termsContainer label {
@@ -227,18 +207,17 @@
     min-height: 50px;
     cursor: pointer;
     font-size: 1rem;
-    border-radius: 8px;
     color: var(--primary-color);
-    background-color: var(--light-color);
+    background-color: var(--background-color);
   }
 
   .activeFormAuthButton {
-    color: var(--light-color);
+    color: var(--background-color);
     background-color: var(--tertiary-color);
   }
 
   .formAuthButton:hover {
-    color: var(--light-color);
+    color: var(--background-color);
     background-color: var(--tertiary-color);
   }
 
@@ -249,7 +228,7 @@
   }
 
   .formChange span {
-    font-size: .8rem;
+    font-size: 0.8rem;
     cursor: pointer;
     text-decoration: underline;
   }
@@ -270,7 +249,7 @@
   }
 
   .btnLogin {
-    background-color: var(--light-color);
+    background-color: var(--background-color);
     color: var(--primary-color);
     border-radius: 4px;
     cursor: pointer;
@@ -278,7 +257,7 @@
   }
 
   .btnLogin:hover {
-    color: var(--light-color);
+    color: var(--background-color);
     background-color: var(--tertiary-color);
   }
 }
@@ -320,8 +299,7 @@
     backdrop-filter: none;
     justify-content: center;
     -webkit-backdrop-filter: none;
-    color: var(--light-color);
-    background-color: var(--primary-color);
+    color: var(--background-color);
   }
 
   .authComponentBgImage {
@@ -331,11 +309,9 @@
     position: relative;
     height: 100%;
     display: flex;
-    color: var(--light-color);
+    color: var(--background-color);
     background-color: var(--primary-color);
   }
-
-
 }
 
 /* ipad pro screens & laptop */

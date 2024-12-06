@@ -8,14 +8,15 @@ export const useAuthStore = create(
   persist(
     (set, get) => ({
       isAuth: false,
+      userId: "",
       username: "",
       email: "",
-      country: "",
-      phoneNumber: "",
-      userType: "",
+      profileImage: "",
+      referralCode: "",
+      isAuthorized: false,
       accessToken: "",
       refreshToken: "",
-      isAuthorized: false,
+      lastLogin: null,
       tokenExpirationTime: null,
       refreshTimeoutId: null,
 
@@ -23,14 +24,15 @@ export const useAuthStore = create(
         const tokenExpirationTime = Date.now() + TOKEN_REFRESH_INTERVAL;
         set({
           isAuth: true,
+          userId: userData.userId,
           username: userData.username,
           email: userData.email,
-          country: userData.country,
-          phoneNumber: userData.phoneNumber,
-          userType: userData.userType,
+          profileImage: userData.profileImage,
+          referralCode: userData.referralCode,
+          isAuthorized: userData.isAuthorized,
           accessToken: userData.accessToken,
           refreshToken: userData.refreshToken,
-          isAuthorized: userData.isAuthorized,
+          lastLogin: userData.lastLogin,
           tokenExpirationTime,
         });
         get().scheduleTokenRefresh();
@@ -40,10 +42,8 @@ export const useAuthStore = create(
         set({
           username: userData.username,
           email: userData.email,
-          country: userData.country,
-          phoneNumber: userData.phoneNumber,
-          userType: userData.userType,
-          isAuthorized: userData.isisAuthorized,
+          profileImage: userData.profileImage,
+          isAuthorized: userData.isAuthorized,
         });
       },
 
@@ -51,14 +51,15 @@ export const useAuthStore = create(
         get().cancelTokenRefresh();
         set({
           isAuth: false,
+          userId: "",
           username: "",
           email: "",
-          country:"",
-          phoneNumber: "",
-          userType: "",
+          profileImage: "",
+          referralCode: "",
+          isAuthorized: false,
           accessToken: "",
           refreshToken: "",
-          isAuthorized: false,
+          lastLogin: null,
           tokenExpirationTime: null,
         });
       },
@@ -66,17 +67,19 @@ export const useAuthStore = create(
       refreshAccessToken: async () => {
         const { refreshToken } = get();
 
+        if (!refreshToken) {
+          get().clearUser();
+          return false;
+        }
+
         try {
-          const response = await fetch(
-            `${SERVER_API}/users/public/promoter/refresh`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ refreshToken }),
-            }
-          );
+          const response = await fetch(`${SERVER_API}/auth/refresh-token`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ refreshToken }),
+          });
 
           if (!response.ok) {
             throw new Error("Failed to refresh token");
@@ -84,29 +87,332 @@ export const useAuthStore = create(
 
           const data = await response.json();
 
-          if (data.responsecode === "00" && data.data) {
-            const tokenExpirationTime = Date.now() + TOKEN_REFRESH_INTERVAL;
+          if (data.status === "success" && data.data) {
+            const tokenExpirationTime = Date.now() + 14 * 60 * 1000; // 14 minutes
             set({
               accessToken: data.data.accessToken,
-              refreshToken: data.data.newRefreshToken,
+              refreshToken: data.data.refreshToken,
               tokenExpirationTime,
             });
             get().scheduleTokenRefresh();
             return true;
-          } else {
-            throw new Error("Invalid response from refresh token endpoint");
           }
+
+          throw new Error("Invalid response from refresh token endpoint");
         } catch (error) {
           console.error("Error refreshing token:", error);
           get().clearUser();
           return false;
         }
       },
-      getAccessToken: async () => {
-        const { accessToken, tokenExpirationTime, refreshAccessToken } = get();
-        if (!accessToken || Date.now() >= tokenExpirationTime) {
+
+      scheduleTokenRefresh: () => {
+        const { tokenExpirationTime, refreshTimeoutId } = get();
+
+        if (refreshTimeoutId) {
+          clearTimeout(refreshTimeoutId);
         }
-        return get().accessToken;
+
+        // Refresh 1 minute before expiration
+        const timeUntilRefresh = Math.max(
+          0,
+          tokenExpirationTime - Date.now() - 60000
+        );
+
+        const newTimeoutId = setTimeout(() => {
+          get().refreshAccessToken();
+        }, timeUntilRefresh);
+
+        set({ refreshTimeoutId: newTimeoutId });
+      },
+
+      login: async (email, password) => {
+        try {
+          const response = await fetch(`${SERVER_API}/auth/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+
+          if (data.status === "success") {
+            get().setUser(data.data);
+            return { success: true, message: data.message };
+          }
+          return { success: false, message: data.message };
+        } catch (error) {
+          console.error("Login error:", error);
+          return { success: false, message: "An error occurred during login" };
+        }
+      },
+
+      register: async (userData) => {
+        try {
+          const response = await fetch(`${SERVER_API}/auth/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+          });
+
+          const data = await response.json();
+
+          if (data.status === "success") {
+            get().setUser(data.data);
+            return { success: true, message: data.message };
+          }
+          return { success: false, message: data.message };
+        } catch (error) {
+          return {
+            success: false,
+            message: "An error occurred during registration",
+          };
+        }
+      },
+
+      logout: async () => {
+        try {
+          const { accessToken } = get();
+          await fetch(`${SERVER_API}/auth/logout`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          get().clearUser();
+          return true;
+        } catch (error) {
+          return false;
+        }
+      },
+
+      updateUsernameOrEmail: async (updateData) => {
+        try {
+          const { accessToken } = get();
+          const response = await fetch(`${SERVER_API}/auth/update`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(updateData),
+          });
+
+          const data = await response.json();
+
+          if (data.user) {
+            get().updateUser(data.user);
+          }
+
+          if (data.status === "success") {
+            return {
+              success: true,
+              message: data.message,
+            };
+          }
+          return {
+            success: false,
+            message: data.message,
+          };
+        } catch (error) {
+          return {
+            success: false,
+            message: "An error occurred while updating profile",
+          };
+        }
+      },
+
+      updatePassword: async (passwordData) => {
+        try {
+          const { accessToken } = get();
+          const response = await fetch(`${SERVER_API}/auth/password`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(passwordData),
+          });
+
+          const data = await response.json();
+
+          if (data.status === "success") {
+            return {
+              success: true,
+              message: data.message,
+            };
+          }
+          return {
+            success: false,
+            message: data.message,
+          };
+        } catch (error) {
+          console.error("Update password error:", error);
+          return {
+            success: false,
+            message: "An error occurred while updating password",
+          };
+        }
+      },
+
+      updateProfileImage: async (imageData) => {
+        try {
+          const { accessToken } = get();
+
+          if (!accessToken) {
+            return {
+              success: false,
+              message: "Access token expired, login again",
+            };
+          }
+
+          const response = await fetch(`${SERVER_API}/auth/profile-image`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ image: imageData }),
+          });
+
+          const data = await response.json();
+          if (data.status === "success") {
+            set({ profileImage: data.user.profileImage });
+            return {
+              success: true,
+              message: data.message,
+            };
+          }
+
+          return {
+            success: false,
+            message: data.message,
+          };
+        } catch (error) {
+          console.error("Profile image update error:", error);
+          return false;
+        }
+      },
+
+      requestPasswordReset: async (email) => {
+        try {
+          const response = await fetch(`${SERVER_API}/auth/reset-link`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          });
+
+          const data = await response.json();
+
+          if (data.status === "success") {
+            return {
+              success: true,
+              message: data.message,
+            };
+          }
+          return {
+            success: false,
+            message: data.message,
+          };
+        } catch (error) {
+          console.error("Password reset request error:", error);
+          return {
+            success: false,
+            message: data.message,
+          };
+        }
+      },
+
+      resetPassword: async (token, newPassword) => {
+        try {
+          const response = await fetch(`${SERVER_API}/auth/reset`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token, newPassword }),
+          });
+
+          const data = await response.json();
+
+          if (data.status === "success") {
+            return {
+              success: true,
+              message: data.message,
+            };
+          }
+          return {
+            success: false,
+            message: data.message,
+          };
+        } catch (error) {
+          console.error("Password reset error:", error);
+          return {
+            success: false,
+            message: data.message,
+          };
+        }
+      },
+
+      toggleAuthorization: async (authData) => {
+        try {
+          const { accessToken } = get();
+          const response = await fetch(`${SERVER_API}/auth/authorize`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(authData),
+          });
+
+          const data = await response.json();
+
+          if (data.status === "success") {
+            return {
+              success: true,
+              message: data.message,
+              userData: data.data,
+            };
+          }
+          return {
+            success: false,
+            message: data.message,
+          };
+        } catch (error) {
+          console.error("Toggle authorization error:", error);
+          return {
+            success: false,
+            message: "An error occurred while toggling authorization",
+          };
+        }
+      },
+
+      deleteAccount: async () => {
+        try {
+          const { accessToken } = get();
+          const response = await fetch(`${SERVER_API}/auth/delete`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          if (response.ok) {
+            get().clearUser();
+            return true;
+          }
+          return false;
+        } catch (error) {
+          return false;
+        }
       },
 
       scheduleTokenRefresh: () => {

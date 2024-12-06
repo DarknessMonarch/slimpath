@@ -211,6 +211,7 @@
 
   .errorText {
     list-style: none;
+    text-align: center;
     color: var(--tertiary-color);
   }
 

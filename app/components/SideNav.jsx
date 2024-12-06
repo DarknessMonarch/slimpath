@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import toast from "react-hot-toast";
 import { useAuthStore } from "@/app/store/Auth";
 import ProfileImg from "@/public/assets/profile.jpg";
 import LogoImg from "@/public/assets/logoColor.png";
@@ -15,9 +14,6 @@ import {
   RiDashboardHorizontalLine as DashboardIcon,
   RiUserLine as UserIcon,
 } from "react-icons/ri";
-// import {
-//   BiMoneyWithdraw as MoneyIcon,
-// } from "react-icons/bi";
 import { MdOutlineSettings as SettingsIcon } from "react-icons/md";
 import { IoReaderOutline as HealthTipsIcon } from "react-icons/io5";
 import { FaCalculator as CalculatorIcon } from "react-icons/fa";
@@ -25,16 +21,19 @@ import { LuContact as ContactIcon } from "react-icons/lu";
 
 export default function SideNav() {
   const router = useRouter();
-  const { isOpen } = useDrawerStore();
+  const { isOpen , toggleOpen} = useDrawerStore();
   const [isMobile, setIsMobile] = useState(false);
+  const { isAuth, profileImage } = useAuthStore();
   const [profile, setProfile] = useState(ProfileImg);
-  const { isAuth, toggleAuth } = useAuthStore();
 
   const pathname = usePathname();
 
   const handleLogin = () => {
     router.push("/authentication/login", { scroll: false });
   };
+
+
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,6 +47,14 @@ export default function SideNav() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    if (isAuth && profileImage) {
+      setProfile(profileImage);
+    } else {
+      setProfile(ProfileImg);
+    }
+  }, [isAuth, profileImage]);
+
   const sidebarClasses = `${styles.sideContainer} ${
     isMobile
       ? isOpen
@@ -55,6 +62,13 @@ export default function SideNav() {
         : styles.hideSideNav
       : styles.showSideNav
   }`;
+  
+
+  const closeDrawer = () => {
+    if (isMobile && isOpen) {
+      toggleOpen();
+    }
+  };
 
   return (
     <div className={sidebarClasses}>
@@ -69,6 +83,7 @@ export default function SideNav() {
         <div className={styles.sideMiddle}>
           <Link
             href="/page/home"
+            onClick={closeDrawer}
             className={`${styles.sideLink} ${
               pathname === "/page/home" || pathname.startsWith("/page/home/")
                 ? styles.activeLink
@@ -94,6 +109,7 @@ export default function SideNav() {
           </div>
           <Link
             href="/page/calculator"
+            onClick={closeDrawer}
             className={`${styles.sideLink} ${
               pathname === "/page/calculator" ||
               pathname.startsWith("/page/calculator/")
@@ -111,43 +127,16 @@ export default function SideNav() {
             <div className={`${styles.pipeCircle} ${styles.leftCircle}`}></div>
             <div
               className={`${styles.pipeLink} ${
-                pathname === "/page/calculator" ||
-                pathname.startsWith("/page/calculator/")
+                pathname === "/page/calculator" || pathname.startsWith("/page/calculator/")
                   ? styles.activePipe
                   : ""
               }`}
             ></div>
             <div className={`${styles.pipeCircle} ${styles.rightCircle}`}></div>
           </div>
-          {/* <Link
-            href="/page/payment"
-            className={`${styles.sideLink} ${
-              pathname === "/page/payment" ||
-              pathname.startsWith("/page/payment/")
-                ? styles.activeLink
-                : ""
-            }`}
-          >
-            <MoneyIcon
-              alt="payment icon"
-              aria-label="payment icon"
-              className={styles.linkIcon}
-            />
-          </Link>
-          <div className={styles.pipeContainer}>
-            <div className={`${styles.pipeCircle} ${styles.leftCircle}`}></div>
-            <div
-              className={`${styles.pipeLink} ${
-                pathname === "/page/payment" || pathname.startsWith("/page/payment/")
-                  ? styles.activePipe
-                  : ""
-              }`}
-            ></div>
-            <div className={`${styles.pipeCircle} ${styles.rightCircle}`}></div>
-          </div> */}
-
           <Link
             href="/page/contact"
+            onClick={closeDrawer}
             className={`${styles.sideLink} ${
               pathname === "/page/contact" ||
               pathname.startsWith("/page/contact/")
@@ -165,17 +154,16 @@ export default function SideNav() {
             <div className={`${styles.pipeCircle} ${styles.leftCircle}`}></div>
             <div
               className={`${styles.pipeLink} ${
-                pathname === "/page/contact" ||
-                pathname.startsWith("/page/contact/")
+                pathname === "/page/contact" || pathname.startsWith("/page/contact/")
                   ? styles.activePipe
                   : ""
               }`}
             ></div>
             <div className={`${styles.pipeCircle} ${styles.rightCircle}`}></div>
           </div>
-
           <Link
             href="/page/healthTips"
+            onClick={closeDrawer}
             className={`${styles.sideLink} ${
               pathname === "/page/healthTips" ||
               pathname.startsWith("/page/healthTips/")
@@ -189,33 +177,43 @@ export default function SideNav() {
               className={styles.linkIcon}
             />
           </Link>
-          <div className={styles.pipeContainer}>
-            <div className={`${styles.pipeCircle} ${styles.leftCircle}`}></div>
-            <div
-              className={`${styles.pipeLink} ${
-                pathname === "/page/healthTips" ||
-                pathname.startsWith("/page/healthTips/")
-                  ? styles.activePipe
-                  : ""
-              }`}
-            ></div>
-            <div className={`${styles.pipeCircle} ${styles.rightCircle}`}></div>
-          </div>
-          <Link
-            href="/page/settings"
-            className={`${styles.sideLink} ${
-              pathname === "/page/settings" ||
-              pathname.startsWith("/page/settings/")
-                ? styles.activeLink
-                : ""
-            }`}
-          >
-            <SettingsIcon
-              alt="settings icon"
-              aria-label="settings icon"
-              className={styles.linkIcon}
-            />
-          </Link>
+
+          {isAuth && (
+            <>
+              <div className={styles.pipeContainer}>
+                <div
+                  className={`${styles.pipeCircle} ${styles.leftCircle}`}
+                ></div>
+                <div
+                  className={`${styles.pipeLink} ${
+                    pathname === "/page/settings" ||
+                    pathname.startsWith("/page/settings/")
+                      ? styles.activePipe
+                      : ""
+                  }`}
+                ></div>
+                <div
+                  className={`${styles.pipeCircle} ${styles.rightCircle}`}
+                ></div>
+              </div>
+              <Link
+                href="/page/settings"
+                onClick={closeDrawer}
+                className={`${styles.sideLink} ${
+                  pathname === "/page/settings" ||
+                  pathname.startsWith("/page/settings/")
+                    ? styles.activeLink
+                    : ""
+                }`}
+              >
+                <SettingsIcon
+                  alt="settings icon"
+                  aria-label="settings icon"
+                  className={styles.linkIcon}
+                />
+              </Link>
+            </>
+          )}
         </div>
         <div className={styles.sideBottomContainer}>
           {isAuth ? (
@@ -227,7 +225,7 @@ export default function SideNav() {
                 src={profile}
                 height={60}
                 width={60}
-                alt="usename profile"
+                alt="user profile"
                 priority
                 className={styles.profileImg}
               />

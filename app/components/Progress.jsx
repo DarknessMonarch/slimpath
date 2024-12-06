@@ -55,7 +55,6 @@ const getIcon = (name) => {
 };
 
 export const Progress = ({ progress, chartData }) => {
-  const { weekly, patterns } = progress;
 
   return (
     <div className={styles.progressSection}>
@@ -70,10 +69,10 @@ export const Progress = ({ progress, chartData }) => {
           <h3>Weekly Progress</h3>
         </div>
         <div className={styles.chartContainer}>
-          <WeightProgressChart data={chartData.weightProgress} />
+          {/* <WeightProgressChart data={} /> */}
         </div>
         <div className={styles.progressDetails}>
-          {Object.entries(weekly).map(([key, value]) => (
+          {/* {Object.entries(weekly).map(([key, value]) => (
             <div key={key} className={styles.progressRow}>
               <div className={styles.progressTitle}>
                 {getIcon(key)}
@@ -81,7 +80,7 @@ export const Progress = ({ progress, chartData }) => {
               </div>
               <span>{value} kg</span>
             </div>
-          ))}
+          ))} */}
         </div>
       
       </div>
@@ -97,13 +96,13 @@ export const Progress = ({ progress, chartData }) => {
         </div>
         <div className={styles.patternInfo}>
           <h4>Best Progress Days</h4>
-          <p>{patterns.bestDays.join(", ")}</p>
+          <p></p>
 
           <h4>Sleep Correlation</h4>
-          <p>{patterns.sleepCorrelation}</p>
+          <p></p>
 
           <h4>Meal Timing</h4>
-          <p>{patterns.mealTiming}</p>
+          <p></p>
         </div>
       </div>
     </div>
