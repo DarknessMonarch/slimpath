@@ -37,7 +37,7 @@ export const useTrackingStore = create(
         set({ isLoading: true, error: null });
         try {
           const { accessToken } = get();
-          const response = await fetch(`${SERVER_API}/tracking/initialize`, {
+          const response = await fetch(`${SERVER_API}/calories/initialize`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -84,7 +84,7 @@ export const useTrackingStore = create(
         set({ isLoading: true, error: null });
         try {
           const { accessToken } = get();
-          const response = await fetch(`${SERVER_API}/tracking/update`, {
+          const response = await fetch(`${SERVER_API}/calories/update`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
