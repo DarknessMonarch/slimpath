@@ -21,9 +21,9 @@ export default function NotFound() {
         alt="Not found image"
         priority={true}
       />
-      <h1>seems your lost</h1> 
+      <h1>404 page found</h1> 
      <button className={styles.notFoundBtn} onClick={goHome}>
-     your way back home
+       Go Home
      </button>
     </div>
   );

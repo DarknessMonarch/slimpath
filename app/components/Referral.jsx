@@ -20,7 +20,7 @@ export default function Referral() {
   const websiteUrl = "https://slimpath.vercel.app";
 
   const generateShareLink = useCallback(() => {
-    const link = `${websiteUrl}/authenticate/signup?referral=${referralCode}`;
+    const link = `${websiteUrl}/authentication/signup?referral=${referralCode}`;
     setShareLink(link);
   }, [referralCode]);
 
