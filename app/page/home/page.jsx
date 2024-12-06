@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 
 import Advert from "@/app/components/Advert";
-import { Meals } from "@/app/components/Meals";
 import styles from "@/app/styles/home.module.css";
 import { Overview } from "@/app/components/Overview";
 import { Progress } from "@/app/components/Progress";
@@ -19,9 +18,7 @@ export default function Home() {
         <div className={styles.homeMainSide}>
           <Overview />
         </div>
-        <div className={styles.homeMainSide}>
-          <Meals meals={currentTracking?.meals} />
-        </div>
+       
         <Advert />
       </div>
       <div className={styles.homeMainSideWrapBottom}>

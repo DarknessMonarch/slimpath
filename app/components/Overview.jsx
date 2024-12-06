@@ -16,6 +16,7 @@ import {
   IoMoon as MoonIcon,
   IoBookmark as InformationIcon,
 } from "react-icons/io5";
+import { GiMeal as MealIcon } from "react-icons/gi";
 import { IoMdPartlySunny as AfternoonIcon } from "react-icons/io";
 import { ImSpoonKnife as CalorieIcon } from "react-icons/im";
 import { IoFitness as ActivityIcon } from "react-icons/io5";
@@ -88,15 +89,15 @@ export const Overview = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isAuth) {
-      toast.error("Please log in to use this feature.");
-      router.push("/authentication/login", { scroll: false });
-      return;
-    } else if (isAuth && !isAuthorized) {
-      toast.error("Please refer two friends to use this feature to get access.");
-      toggleIsOpen();
-      return;
-    }
+    // if (!isAuth) {
+    //   toast.error("Please log in to use this feature.");
+    //   router.push("/authentication/login", { scroll: false });
+    //   return;
+    // } else if (isAuth && !isAuthorized) {
+    //   toast.error("Please refer two friends to use this feature to get access.");
+    //   toggleIsOpen();
+    //   return;
+    // }
 
     if (!validateForm()) return;
 
@@ -150,7 +151,7 @@ export const Overview = () => {
                 Current Weight (kg)
               </label>
               <input
-                type="number"
+                type="text"
                 name="currentWeight"
                 id="currentWeight"
                 value={formData.currentWeight}
@@ -168,7 +169,7 @@ export const Overview = () => {
                 Goal Weight (kg)
               </label>
               <input
-                type="number"
+                type="text"
                 name="goalWeight"
                 id="goalWeight"
                 value={formData.goalWeight}
@@ -188,7 +189,7 @@ export const Overview = () => {
                 Duration (weeks)
               </label>
               <input
-                type="number"
+                type="text"
                 name="durationWeeks"
                 id="durationWeeks"
                 value={formData.durationWeeks}
@@ -206,7 +207,7 @@ export const Overview = () => {
                 Age
               </label>
               <input
-                type="number"
+                type="text"
                 name="age"
                 id="age"
                 value={formData.age}
@@ -223,7 +224,7 @@ export const Overview = () => {
                 Height (cm)
               </label>
               <input
-                type="number"
+                type="text"
                 name="height"
                 id="height"
                 value={formData.height}
@@ -263,11 +264,11 @@ export const Overview = () => {
         renderEmptyCard()
       ) : (
         <div className={styles.caloriesSummarySection}>
-          <div className={styles.sectionHeader}>
+          <div className={styles.sectionTitle}>
             <CalorieIcon
               height={40}
               width={40}
-              className={styles.icon}
+              className={styles.overviewIcon}
               aria-label="Calorie icon"
             />
             <h3>Daily Calorie Summary</h3>
@@ -277,20 +278,43 @@ export const Overview = () => {
             <span>kcal</span>
           </div>
           <div className={styles.mealDistribution}>
-            <div className={styles.mealDistribution}>
-              {currentTracking.mealDistribution &&
-                Object.entries(currentTracking.mealDistribution).map(
-                  ([time, calories]) => (
-                    <div key={time} className={styles.distributionCard}>
-                      <div className={styles.cardHeader}>
-                        {getIcon(time)}
-                        <h4>{time}</h4>
-                      </div>
-                      <span>{calories} kcal</span>
+            {currentTracking.mealDistribution &&
+              Object.entries(currentTracking.mealDistribution)
+                .filter(([time]) =>
+                  ["morning", "afternoon", "night"].includes(time)
+                )
+                .map(([time, mealData]) => (
+                  <div key={time} className={styles.distributionCard}>
+                    <div className={styles.cardTitle}>
+                      {getIcon(time.charAt(0).toUpperCase() + time.slice(1))}
+                      <h4>{time.charAt(0).toUpperCase() + time.slice(1)}</h4>
                     </div>
-                  )
-                )}
-            </div>
+                    <div className={styles.mealDetails}>
+                      <h2>
+                        {mealData.calories} kcal
+                      </h2>
+                      <p className={styles.mealDescription}>
+                        {mealData.description}
+                      </p>
+                      <div className={styles.recommendedMeals}>
+                        <div className={styles.recommendedTitle}>
+                          <MealIcon
+                            height={40}
+                            width={40}
+                            className={styles.recommendedIcon}
+                            aria-label="Information icon"
+                          />
+                          <h3>Recommended Meals</h3>
+                        </div>
+                        <ul>
+                          {mealData.recommendedMeals.map((meal, index) => (
+                            <li key={index}>{meal}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
       )}
