@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/app/store/Auth";
-import ProfileImg from "@/public/assets/profile.jpg";
+import ProfileImg from "@/public/assets/banner.png";
 import LogoImg from "@/public/assets/logoColor.png";
 import { useDrawerStore } from "@/app/store/Drawer";
 import styles from "@/app/styles/sideNav.module.css";
@@ -28,11 +28,7 @@ export default function SideNav() {
 
   const pathname = usePathname();
 
-  const handleLogin = () => {
-    router.push("/authentication/login", { scroll: false });
-  };
-
-
+ 
 
 
   useEffect(() => {
@@ -65,6 +61,18 @@ export default function SideNav() {
   
 
   const closeDrawer = () => {
+    if (isMobile && isOpen) {
+      toggleOpen();
+    }
+  };
+
+  const handleLogin = () => {
+    router.push("/authentication/login", { scroll: false });
+  };
+
+
+  const handleProfile = () => {
+    router.push("settings", { scroll: false });
     if (isMobile && isOpen) {
       toggleOpen();
     }
@@ -219,6 +227,7 @@ export default function SideNav() {
           {isAuth ? (
             <div
               className={styles.userSection}
+              onClick={handleProfile}
               style={{ width: !isOpen || isMobile ? "auto" : "" }}
             >
               <Image

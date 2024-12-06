@@ -165,6 +165,7 @@
     gap: 20px;
     width: 100%;
     display: flex;
+    cursor: pointer;
     align-items: center;
     flex-direction: column;
   }
@@ -177,7 +178,6 @@
     width: 60px;
     height: 60px;
     display: flex;
-    cursor: pointer;
     align-items: center;
     border-radius: 15px;
     justify-content: center;

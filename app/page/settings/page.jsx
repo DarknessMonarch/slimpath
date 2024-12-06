@@ -3,7 +3,7 @@
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
-import ProfileImg from "@/public/assets/profile.jpg";
+import ProfileImg from "@/public/assets/banner.png";
 import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "@/app/store/Auth";
 
@@ -298,7 +298,7 @@ export default function SettingsPage() {
                 <p className={styles.errorText}>{errors.email}</p>
               )}
               <p className={styles.errorText}>
-                ! After updating your email, you will be logged out
+                After updating your email, you will be logged out
               </p>
             </div>
 
@@ -455,7 +455,7 @@ export default function SettingsPage() {
               {isLoading ? <Loader /> : "Update Password"}
             </button>
             <p className={styles.errorText}>
-              ! After updating your password, you will be logged out
+              After updating your password, you will be logged out
             </p>
           </form>
         </div>
