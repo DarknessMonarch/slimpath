@@ -265,11 +265,11 @@ export const Overview = () => {
             <h3>Daily Calorie Summary</h3>
           </div>
           <div className={styles.totalCalories}>
-            <h1>{currentTracking.dailyCalories}</h1>
+            <h1>{currentTracking?.dailyCalories}</h1>
             <span>kcal</span>
           </div>
           <div className={styles.mealDistribution}>
-            {Object.entries(currentTracking.mealDistribution).map(
+            {Object.entries(currentTracking?.mealDistribution).map(
               ([time, calories]) => (
                 <div key={time} className={styles.distributionCard}>
                   <div className={styles.cardHeader}>
