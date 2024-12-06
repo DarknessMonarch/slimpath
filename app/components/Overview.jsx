@@ -90,15 +90,15 @@ export const Overview = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!isAuth) {
-    //   toast.error("Please log in to use this feature.");
-    //   router.push("/authentication/login", { scroll: false });
-    //   return;
-    // } else if (isAuth && !isAuthorized) {
-    //   toast.error("Please refer two friends to use this feature to get access.");
-    //   toggleIsOpen();
-    //   return;
-    // }
+    if (!isAuth) {
+      toast.error("Please log in to use this feature.");
+      router.push("/authentication/login", { scroll: false });
+      return;
+    } else if (isAuth && !isAuthorized) {
+      toast.error("Please refer two friends to use this feature to get access.");
+      toggleIsOpen();
+      return;
+    }
 
     if (!validateForm()) return;
 
