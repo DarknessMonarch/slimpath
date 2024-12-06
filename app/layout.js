@@ -17,7 +17,7 @@ import {
 
 
 export const metadata = {
-  metadataBase: new URL("https://www.slimpath.com/"),
+  metadataBase: new URL("https://slimpath.vercel.app/"),
   title: "slimpath - A smarter way to slim down",
   applicationName: "slimpath",
   author: "slimpath",
@@ -25,7 +25,7 @@ export const metadata = {
     "https://raw.githubusercontent.com/DarknessMonarch/slimpath/refs/heads/master/public/assets/banner.png",
   description:
     "slimpath helps you lose weight smartly by tracking calories in and out. With precise calculations, it makes meal tracking, goal-setting, and staying on track easy for a healthier, slimmer you.",
-  metadataBase: new URL("https://www.slimpath.com/"),
+  metadataBase: new URL("https://slimpath.vercel.app/"),
   keywords: [
     "slimpath",
     "slim",
@@ -54,7 +54,7 @@ export const metadata = {
     title: "slimpath - A smarter way to slim down",
     description:
       "",
-    url: "https://www.slimpath.com/",
+    url: "https://slimpath.vercel.app/",
     siteName: "slimpath",
     images:
       "https://raw.githubusercontent.com/DarknessMonarch/slimpath/refs/heads/master/public/assets/banner.png",

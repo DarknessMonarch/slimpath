@@ -5,6 +5,6 @@ export default function robots() {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://www.slimpath.com/sitemap.xml',
+    sitemap: 'https://slimpath.vercel.app/sitemap.xml',
   }
 }
