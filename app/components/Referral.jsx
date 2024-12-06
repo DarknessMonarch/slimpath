@@ -75,7 +75,7 @@ export default function Referral() {
         <div className={styles.popupHeader}>
           <h1>Social share</h1>
           <p>
-            Share this link to five people to get access to Slimpath for life
+            Share this link to two people to get access to Slimpath for life
           </p>
         </div>
         <div className={styles.socialContainer}>

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Loader from "@/app/loading";
 import Popup from "@/app/components/Popup";
 import { useAuthStore } from "@/app/store/Auth";
+import Referral from "@/app/components/Referral";
 import Dropdown from "@/app/components/Dropdown";
 import { useSocialStore } from "@/app/store/Social";
 import { useTrackingStore } from "@/app/store/Tracking";

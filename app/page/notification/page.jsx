@@ -76,7 +76,7 @@ export default function NotificationPage() {
   useEffect(() => {
     const interval = setInterval(checkUpcomingSchedules, 60000); // Check every minute
     return () => clearInterval(interval);
-  }, [notificationEnabled]);
+  }, [notificationEnabled, schedules]);
 
   const checkUpcomingSchedules = () => {
     if (!notificationEnabled) return;
