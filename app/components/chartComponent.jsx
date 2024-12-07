@@ -23,36 +23,28 @@ ChartJS.register(
 );
 
 const WeightProgressChart = ({ data }) => {
-  // Add console.log to debug the incoming data
-  console.log("Chart Data:", data);
 
-  // Early return if no data
-  if (!data || !data.weightProgress) {
-    console.log("No weight progress data available");
+  if (!data?.actual || !data?.target || !data?.labels) {
     return null;
   }
 
-  // Format dates for x-axis
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  // Get dates and weights
-  const dates = data.weightProgress.map(point => formatDate(point.date));
-  const weights = data.weightProgress.map(point => point.weight);
-
-  // Create the chart data
   const chartData = {
-    labels: dates,
+    labels: data.labels,
     datasets: [
       {
         label: "Actual Weight",
-        data: weights,
+        data: data.actual,
         borderColor: 'rgb(147, 112, 219)',
         backgroundColor: 'rgba(147, 112, 219, 0.5)',
+        tension: 0.1,
+        fill: false
+      },
+      {
+        label: "Target Weight",
+        data: data.target,
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+        borderDash: [5, 5],
         tension: 0.1,
         fill: false
       }
@@ -70,9 +62,6 @@ const WeightProgressChart = ({ data }) => {
           padding: 20,
           color: '#666'
         }
-      },
-      title: {
-        display: false
       },
       tooltip: {
         mode: 'index',
@@ -102,8 +91,9 @@ const WeightProgressChart = ({ data }) => {
         ticks: {
           color: '#666'
         },
-        min: Math.min(...weights) - 2,
-        max: Math.max(...weights) + 2
+        // Set min/max with some padding
+        min: Math.min(...data.actual, ...data.target) - 2,
+        max: Math.max(...data.actual, ...data.target) + 2
       }
     },
     interaction: {

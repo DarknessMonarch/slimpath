@@ -16,15 +16,13 @@ const getIcon = (name) => {
     case "startingWeight":
       return (
         <StartingIcon
-          style={{ fontSize: "40px" }}
           className={styles.progressIcon}
           aria-label="progress icon"
         />
       );
-    case "weeklyGoal":
+    case "Goal":
       return (
         <GoalIcon
-          style={{ fontSize: "40px" }}
           className={styles.progressIcon}
           aria-label="progress icon"
         />
@@ -32,7 +30,6 @@ const getIcon = (name) => {
     case "currentWeight":
       return (
         <CurrentIcon
-          style={{ fontSize: "40px" }}
           className={styles.progressIcon}
           aria-label="progress icon"
         />
@@ -40,7 +37,6 @@ const getIcon = (name) => {
     case "actualLoss":
       return (
         <LossIcon
-          style={{ fontSize: "40px" }}
           className={styles.progressIcon}
           aria-label="progress icon"
         />
@@ -63,7 +59,9 @@ const renderEmptyCard = () => {
       <div className={`${styles.weeklyProgress} ${styles.emptyCard} skeleton`}>
         <LogoLoading />
       </div>
-      <div className={`${styles.patternDetection} ${styles.emptyCard} skeleton`}>
+      <div
+        className={`${styles.patternDetection} ${styles.emptyCard} skeleton`}
+      >
         <LogoLoading />
       </div>
     </div>
@@ -78,13 +76,15 @@ export const Progress = () => {
   }
 
   // Calculate weight change using the first entry from weightProgress
-  const startingWeight = currentTracking.chartData?.weightProgress?.[0]?.weight || currentTracking.currentWeight;
+  const startingWeight =
+    currentTracking.chartData?.weightProgress?.[0]?.weight ||
+    currentTracking.currentWeight;
   const currentWeight = currentTracking.currentWeight;
   const weightChange = currentWeight - startingWeight;
 
   const weekly = {
     startingWeight: startingWeight,
-    weeklyGoal: currentTracking.goalWeight,
+    Goal: currentTracking.goalWeight,
     currentWeight: currentWeight,
     actualLoss: weightChange,
   };
@@ -94,7 +94,6 @@ export const Progress = () => {
       <div className={styles.weeklyProgress}>
         <div className={styles.sectionTitle}>
           <CalendarIcon
-            style={{ fontSize: "40px" }}
             className={styles.overviewIcon}
             aria-label="Information icon"
           />
@@ -111,7 +110,8 @@ export const Progress = () => {
                 <h3>{formatKey(key)}</h3>
               </div>
               <span>
-                {typeof value === "number" ? Math.abs(value).toFixed(1) : value} lbs
+                {typeof value === "number" ? Math.abs(value).toFixed(1) : value}{" "}
+                lbs
               </span>
             </div>
           ))}
@@ -120,33 +120,27 @@ export const Progress = () => {
       <div className={styles.patternDetection}>
         <div className={styles.sectionTitle}>
           <PatternIcon
-            style={{ fontSize: "40px" }}
             className={styles.overviewIcon}
             aria-label="Pattern icon"
           />
           <h3>Pattern Detection</h3>
         </div>
-        {currentTracking.chartData?.progressTrend?.length > 0 ? (
-          currentTracking.chartData.progressTrend.map((trend) => (
-            <div key={`week-${trend.week}`} className={styles.patternInfo}>
-              <div className={styles.progressRow}>
-                <div className={styles.progressTitle}>
-                  <h3>Week {trend.week}</h3>
-                </div>
-                <span>
-                  {trend.actual.toFixed(1)} lbs → {trend.predicted.toFixed(1)} lbs
-                </span>
-              </div>
-              <div className={styles.progressRow}>
-                <div className={styles.progressTitle}>
-                  <h4>Progress Difference</h4>
-                </div>
-                <span>
-                  {(trend.predicted - trend.actual).toFixed(1)} lbs
-                </span>
-              </div>
-            </div>
-          ))
+        {currentTracking?.chartData?.actual ? (
+          <div className={styles.patternInfo}>
+            <h4>Week 1</h4>
+            <p>
+              {currentTracking.chartData.actual[0].toFixed(1)} lbs →{" "}
+              {currentTracking.chartData.target[0].toFixed(1)} lbs
+            </p>
+            <h4>Progress Difference</h4>
+            <p>
+              {(
+                currentTracking.chartData.target[0] -
+                currentTracking.chartData.actual[0]
+              ).toFixed(1)}{" "}
+              lbs
+            </p>
+          </div>
         ) : (
           <div className={styles.patternInfo}>
             <h4>No Pattern Detected</h4>

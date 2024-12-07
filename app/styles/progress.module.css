@@ -64,17 +64,17 @@
     justify-content: center;
     scroll-snap-align: center;
     color: var(--background-color);
-    background-color: var(--secondary-color);
+    background-color: var(--tertiary-color);
   }
 
   .progressTitle {
     gap: 10px;
     display: flex;
     padding: 10px;
-    border-radius: 15px;
+    border-radius: 30px;
     align-items: center;
     justify-content: center;
-    background-color: var(--secondary-light-color);
+    background-color: var(--tertiary-light-color);
   }
 
   .progressTitle h3 {
