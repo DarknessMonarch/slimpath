@@ -9,8 +9,7 @@ import { Progress } from "@/app/components/Progress";
 import { useTrackingStore } from "@/app/store/Tracking";
 
 export default function Home() {
-  const { currentTracking} = useTrackingStore();
-
+  const { currentTracking } = useTrackingStore();
 
   return (
     <div className={styles.homeMain}>
@@ -18,12 +17,11 @@ export default function Home() {
         <div className={styles.homeMainSide}>
           <Overview />
         </div>
-       
         <Advert />
       </div>
       <div className={styles.homeMainSideWrapBottom}>
         <Progress
-          progress={currentTracking?.progress}
+          progress={currentTracking?.progressTrend}
           chartData={currentTracking?.chartData}
         />
       </div>

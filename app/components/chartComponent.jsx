@@ -26,52 +26,43 @@ ChartJS.register(
 );
 
 const WeightProgressChart = ({ data }) => {
-  const actualData = data?.actual || [];
-  const targetData = data?.target || [];
 
   const chartData = {
-    labels: data.labels,
+    labels: data.tracking.chartData.calorieDistribution.labels,
     datasets: [
       {
         label: "Actual Weight",
-        data: actualData,
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
-        tension: 0.4,
+        data: data.tracking.chartData.weightProgress.map(point => point.weight),
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
       },
       {
-        label: "Target Weight",
-        data: targetData,
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-        borderDash: [5, 5],
-        tension: 0.4,
-      },
-    ],
+        label: "Predicted Weight",
+        data: data.tracking.chartData.progressTrend.map(point => point.predicted),
+        borderColor: 'rgb(255, 99, 132)',
+        tension: 0.1,
+        borderDash: [5, 5]
+      }
+    ]
   };
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: "top",
+        position: 'top',
       },
       title: {
         display: true,
-        text: "Weight Progress Over Time",
-      },
+        text: 'Weight Progress Over Time'
+      }
     },
     scales: {
       y: {
-        min: Math.min(...actualData, ...targetData) - 1,
-        max: Math.max(...actualData, ...targetData) + 1,
-        title: {
-          display: true,
-          text: "Weight (kg)",
-        },
-      },
-    },
+        min: Math.min(data.tracking.currentWeight, data.tracking.goalWeight) - 5,
+        max: Math.max(data.tracking.currentWeight, data.tracking.goalWeight) + 5
+      }
+    }
   };
 
   return <Line data={chartData} options={options} />;

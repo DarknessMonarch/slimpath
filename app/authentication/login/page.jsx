@@ -1,13 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import toast from "react-hot-toast";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Loader from "@/app/components/Loader";
 import LogoImg from "@/public/assets/logo.png";
 import { useAuthStore } from "@/app/store/Auth";
 import styles from "@/app/styles/auth.module.css";
+import { useTrackingStore } from "@/app/store/Tracking";
 import auth1Image from "@/public/assets/auth1Image.jpg";
 
 import {
@@ -26,6 +27,8 @@ export default function Login() {
   const [terms, setTerms] = useState(false);
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
+  const { userId } = useAuthStore();
+  const { fetchAllData } = useTrackingStore();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -60,6 +63,7 @@ export default function Login() {
 
       if (result.success) {
         toast.success("Welcome back!");
+        await fetchAllData(userId);
         router.push("/page/home", { scroll: false });
       } else {
         toast.error(result.message);
@@ -144,9 +148,7 @@ export default function Login() {
               <label htmlFor="terms">Accept terms and conditions</label>
             </div>
             {termsError && <p className={styles.errorText}>{termsError}</p>}
-            <span onClick={() => router.push("forgot")}>
-              Forgot Password
-            </span>
+            <span onClick={() => router.push("forgot")}>Forgot Password</span>
           </div>
 
           <button

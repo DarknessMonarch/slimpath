@@ -10,10 +10,11 @@
   .basicInfo {
     gap: 20px;
     display: flex;
-    height: 100%;
     padding: 10px;
+    height: fit-content;
     border-radius: 12px;
     flex-direction: column;
+    justify-content:center ;
     background-color: var(--background-color);
 
   }
@@ -302,7 +303,10 @@
   .emptyCard {
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
     border-radius: 12px;
+    justify-content: center;
     background-color: var(--background-color);
   }
 }
@@ -312,9 +316,12 @@
   .distributionCard {
     min-width: 200px;
   }
+  
   .formLastGroup {
     flex-direction: row;
   }
+
+ 
 }
 
 /* ipad pro screens & laptop */
@@ -324,6 +331,7 @@
 /* large screens : Desktop and 4k screens */
 
 @media only screen and (min-width: 64.063em) and (max-width: 90em) {
+
 }
 
 /* 5k screens and above */

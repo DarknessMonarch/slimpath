@@ -115,6 +115,16 @@
   .patternInfo p {
     color: var(--tertiary-color);
   }
+
+  /* when their is no data  */
+  .emptyCard {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    justify-content: center;
+    background-color: var(--background-color);
+  }
 }
 
 /* using it as global style for larger devices  */
