@@ -157,7 +157,7 @@ export const Overview = () => {
                 value={formData.currentWeight}
                 onChange={handleInputChange}
                 className={styles.inputField}
-                placeholder="70"
+                placeholder="200"
               />
               {errors.currentWeight && (
                 <p className={styles.errorText}>{errors.currentWeight}</p>
@@ -175,7 +175,7 @@ export const Overview = () => {
                 value={formData.goalWeight}
                 onChange={handleInputChange}
                 className={styles.inputField}
-                placeholder="65"
+                placeholder="195"
               />
               {errors.goalWeight && (
                 <p className={styles.errorText}>{errors.goalWeight}</p>
@@ -195,7 +195,7 @@ export const Overview = () => {
                 value={formData.durationWeeks}
                 onChange={handleInputChange}
                 className={styles.inputField}
-                placeholder="12"
+                placeholder="4"
               />
               {errors.durationWeeks && (
                 <p className={styles.errorText}>{errors.durationWeeks}</p>
@@ -213,7 +213,7 @@ export const Overview = () => {
                 value={formData.age}
                 onChange={handleInputChange}
                 className={styles.inputField}
-                placeholder="30"
+                placeholder="20"
               />
               {errors.age && <p className={styles.errorText}>{errors.age}</p>}
             </div>
@@ -230,7 +230,7 @@ export const Overview = () => {
                 value={formData.height}
                 onChange={handleInputChange}
                 className={styles.inputField}
-                placeholder="170"
+                placeholder="5.8"
               />
               {errors.height && (
                 <p className={styles.errorText}>{errors.height}</p>
