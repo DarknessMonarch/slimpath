@@ -8,7 +8,6 @@ import Loader from "@/app/components/Loader";
 import LogoImg from "@/public/assets/logo.png";
 import { useAuthStore } from "@/app/store/Auth";
 import styles from "@/app/styles/auth.module.css";
-import { useTrackingStore } from "@/app/store/Tracking";
 import auth1Image from "@/public/assets/auth1Image.jpg";
 
 import {
@@ -27,8 +26,6 @@ export default function Login() {
   const [terms, setTerms] = useState(false);
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
-  const { userId } = useAuthStore();
-  const { fetchAllData } = useTrackingStore();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -63,7 +60,6 @@ export default function Login() {
 
       if (result.success) {
         toast.success("Welcome back!");
-        await fetchAllData(userId);
         router.push("/page/home", { scroll: false });
       } else {
         toast.error(result.message);

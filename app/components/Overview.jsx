@@ -52,7 +52,7 @@ export const Overview = () => {
     durationWeeks: "",
     age: "",
     height: "",
-    activityLevel: "lightlyActive",
+    activityLevel: "sedentary",
   });
 
   const [errors, setErrors] = useState({});
@@ -68,10 +68,26 @@ export const Overview = () => {
     };
 
     Object.entries(fields).forEach(([key, label]) => {
-      if (!formData[key]) {
+      const value = formData[key];
+      if (!value) {
         newErrors[key] = `${label} is required`;
+      } else if (isNaN(parseFloat(value))) {
+        newErrors[key] = `${label} must be a valid number`;
+      } else if (parseFloat(value) <= 0) {
+        newErrors[key] = `${label} must be greater than 0`;
       }
     });
+
+    // Additional validation rules
+    if (!newErrors.currentWeight && !newErrors.goalWeight) {
+      if (parseFloat(formData.goalWeight) >= parseFloat(formData.currentWeight)) {
+        newErrors.goalWeight = "Goal weight should be less than current weight";
+      }
+    }
+
+    if (!newErrors.age && parseInt(formData.age) > 120) {
+      newErrors.age = "Please enter a valid age";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -79,7 +95,26 @@ export const Overview = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Only allow numbers and single decimal point
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    
+    // Handle special cases for each field
+    let finalValue = numericValue;
+    if (numericValue.includes('.')) {
+      const parts = numericValue.split('.');
+      if (parts.length > 2) {
+        finalValue = parts[0] + '.' + parts.slice(1).join('');
+      }
+      
+      // Limit decimal places based on field
+      if (name === 'height') {
+        finalValue = parts[0] + '.' + (parts[1] || '').slice(0, 1);
+      } else {
+        finalValue = parts[0] + '.' + (parts[1] || '').slice(0, 2);
+      }
+    }
+    
+    setFormData((prev) => ({ ...prev, [name]: finalValue }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -102,10 +137,18 @@ export const Overview = () => {
 
     if (!validateForm()) return;
 
-    const result = await initializeTracking({
+    
+    const numericFormData = {
       userId,
-      ...formData,
-    });
+      activityLevel: formData.activityLevel,
+      currentWeight: parseFloat(formData.currentWeight),
+      goalWeight: parseFloat(formData.goalWeight),
+      durationWeeks: parseInt(formData.durationWeeks),
+      age: parseInt(formData.age),
+      height: parseFloat(formData.height)
+    };
+
+    const result = await initializeTracking(numericFormData);
 
     if (result.success) {
       toast.success("Analysis completed successfully!");
@@ -114,16 +157,13 @@ export const Overview = () => {
 
   const getIcon = (time) => {
     const icons = {
-      Morning: (
-        <MorningIcon className={styles.icon} aria-label="Morning icon" />
-      ),
-      Afternoon: (
-        <AfternoonIcon className={styles.icon} aria-label="Afternoon icon" />
-      ),
+      Morning: <MorningIcon className={styles.icon} aria-label="Morning icon" />,
+      Afternoon: <AfternoonIcon className={styles.icon} aria-label="Afternoon icon" />,
       Night: <MoonIcon className={styles.icon} aria-label="Night icon" />,
     };
     return icons[time] || icons.Morning;
   };
+
   const renderEmptyCard = () => {
     return (
       <div className={`${styles.caloriesSummarySection} ${styles.emptyCard} skeleton`}>
@@ -152,6 +192,7 @@ export const Overview = () => {
               </label>
               <input
                 type="text"
+                inputMode="decimal"
                 name="currentWeight"
                 id="currentWeight"
                 value={formData.currentWeight}
@@ -170,6 +211,7 @@ export const Overview = () => {
               </label>
               <input
                 type="text"
+                inputMode="decimal"
                 name="goalWeight"
                 id="goalWeight"
                 value={formData.goalWeight}
@@ -190,6 +232,7 @@ export const Overview = () => {
               </label>
               <input
                 type="text"
+                inputMode="numeric"
                 name="durationWeeks"
                 id="durationWeeks"
                 value={formData.durationWeeks}
@@ -204,10 +247,11 @@ export const Overview = () => {
 
             <div className={styles.inputContainer}>
               <label htmlFor="age" className={styles.label}>
-                Age 
+                Age
               </label>
               <input
                 type="text"
+                inputMode="numeric"
                 name="age"
                 id="age"
                 value={formData.age}
@@ -218,6 +262,7 @@ export const Overview = () => {
               {errors.age && <p className={styles.errorText}>{errors.age}</p>}
             </div>
           </div>
+
           <div className={`${styles.formGroup} ${styles.formLastGroup}`}>
             <div className={styles.inputContainer}>
               <label htmlFor="height" className={styles.label}>
@@ -225,6 +270,7 @@ export const Overview = () => {
               </label>
               <input
                 type="text"
+                inputMode="decimal"
                 name="height"
                 id="height"
                 value={formData.height}
@@ -274,7 +320,7 @@ export const Overview = () => {
             <h3>Daily Calorie Summary</h3>
           </div>
           <div className={styles.totalCalories}>
-          <h1>{currentTracking?.dailyCalories ?? 0}</h1>
+            <h1>{currentTracking?.dailyCalories ?? 0}</h1>
             <span>kcal</span>
           </div>
           <div className={styles.mealDistribution}>
@@ -290,9 +336,7 @@ export const Overview = () => {
                       <h4>{time.charAt(0).toUpperCase() + time.slice(1)}</h4>
                     </div>
                     <div className={styles.mealDetails}>
-                      <h2>
-                        {mealData.calories} kcal
-                      </h2>
+                      <h2>{mealData.calories} kcal</h2>
                       <p className={styles.mealDescription}>
                         {mealData.description}
                       </p>

@@ -7,8 +7,31 @@ export const useTrackingStore = create(
   persist(
     (set, get) => ({
       currentTracking: null,
+      trackingHistory: [],
       isLoading: false,
       error: null,
+
+      setTracking: (trackingData) => {
+        set({
+          currentTracking: trackingData,
+          error: null,
+        });
+      },
+
+      setTrackingHistory: (history) => {
+        set({
+          trackingHistory: history,
+          error: null,
+        });
+      },
+
+      clearTracking: () => {
+        set({
+          currentTracking: null,
+          trackingHistory: [],
+          error: null,
+        });
+      },
 
       fetchAllData: async (userId) => {
         set({ isLoading: true, error: null });
@@ -22,56 +45,53 @@ export const useTrackingStore = create(
 
           const data = await response.json();
 
-          if (response.ok) {
-            const tracking = data.tracking;
-
-            const chartData = {
-              labels: tracking.chartData.progressTrend.map(
-                (week) => `Week ${week.week}`
-              ),
-              actual: tracking.chartData.progressTrend.map(
-                (week) => week.actual
-              ),
-              target: tracking.chartData.progressTrend.map(
-                (week) => week.predicted
-              ),
-            };
-
-            const weeklyProgress = {
-              startingWeight: tracking.currentWeight,
-              weeklyGoal:
-                (tracking.goalWeight - tracking.currentWeight) /
-                tracking.durationWeeks,
-              currentWeight:
-                tracking.weeklyProgress[tracking.weeklyProgress.length - 1]
-                  ?.currentWeight || tracking.currentWeight,
-              actualLoss:
-                tracking.currentWeight -
-                (tracking.weeklyProgress[tracking.weeklyProgress.length - 1]
-                  ?.currentWeight || tracking.currentWeight),
-            };
-
-            set({
-              currentTracking: {
-                ...tracking,
-                processedChartData: chartData,
-                weeklyProgress,
-                progressTrend: tracking.progressPatterns,
-                chartData: chartData,
-              },
-              isLoading: false,
-            });
-            return { success: true, data };
+          if (!response.ok) {
+            const error = data.error || "Failed to fetch tracking data";
+            set({ error, isLoading: false });
+            return { success: false, message: error };
           }
 
-          set({
-            error: data.error || "Failed to fetch tracking data",
-            isLoading: false,
-          });
-          return {
-            success: false,
-            message: data.error || "Failed to fetch tracking data",
+          const tracking = data.tracking;
+          if (!tracking) {
+            set({ isLoading: false });
+            return { success: false, message: "No tracking data found" };
+          }
+
+          // Process chart data if it exists
+          if (tracking.weeklyProgress) {
+            const chartData = {
+              labels: tracking.weeklyProgress.map((_, index) => `Week ${index + 1}`),
+              actual: tracking.weeklyProgress.map(week => week.currentWeight),
+              target: Array(tracking.durationWeeks).fill(null).map((_, index) => {
+                const weeklyWeightLoss = 
+                  (tracking.currentWeight - tracking.goalWeight) / tracking.durationWeeks;
+                return Number((tracking.currentWeight - (weeklyWeightLoss * (index + 1))).toFixed(1));
+              }),
+            };
+
+            tracking.chartData = chartData;
+          }
+
+          // Calculate progress percentage
+          const latestWeight = tracking.weeklyProgress?.[tracking.weeklyProgress.length - 1]?.currentWeight;
+          const progressPercentage = get().calculateProgressPercentage(
+            tracking.currentWeight,
+            tracking.goalWeight,
+            latestWeight || tracking.currentWeight
+          );
+
+          const processedTracking = {
+            ...tracking,
+            progressPercentage,
           };
+
+          set({
+            currentTracking: processedTracking,
+            isLoading: false,
+            error: null
+          });
+          
+          return { success: true, data: processedTracking };
         } catch (error) {
           console.error("All data fetch error:", error);
           set({
@@ -80,7 +100,7 @@ export const useTrackingStore = create(
           });
           return {
             success: false,
-            message: "An error occurred while fetching tracking data",
+            message: "An error occurred while fetching tracking data"
           };
         }
       },
@@ -100,19 +120,23 @@ export const useTrackingStore = create(
 
           const data = await response.json();
 
-          if (response.ok) {
-            await get().fetchAllData(trackingData.userId);
-            return { success: true, tracking: data.tracking };
+          if (!response.ok) {
+            const error = data.error || "Failed to initialize tracking";
+            set({ error, isLoading: false });
+            return { success: false, message: error };
           }
 
+          const tracking = {
+            ...data.tracking,
+            progressPercentage: data.tracking.progressPercentage || 0,
+          };
+
           set({
-            error: data.error || "Failed to initialize tracking",
+            currentTracking: tracking,
             isLoading: false,
           });
-          return {
-            success: false,
-            message: data.error || "Failed to initialize tracking",
-          };
+
+          return { success: true, tracking };
         } catch (error) {
           console.error("Tracking initialization error:", error);
           set({
@@ -121,7 +145,7 @@ export const useTrackingStore = create(
           });
           return {
             success: false,
-            message: "An error occurred during tracking initialization",
+            message: "An error occurred during tracking initialization"
           };
         }
       },
@@ -141,19 +165,23 @@ export const useTrackingStore = create(
 
           const data = await response.json();
 
-          if (response.ok) {
-            await get().fetchAllData(updateData.userId);
-            return { success: true, tracking: data.tracking };
+          if (!response.ok) {
+            const error = data.error || "Failed to update tracking";
+            set({ error, isLoading: false });
+            return { success: false, message: error };
           }
 
+          const tracking = {
+            ...data.tracking,
+            progressPercentage: data.tracking.progressPercentage || 0,
+          };
+
           set({
-            error: data.error || "Failed to update tracking",
+            currentTracking: tracking,
             isLoading: false,
           });
-          return {
-            success: false,
-            message: data.error || "Failed to update tracking",
-          };
+
+          return { success: true, tracking };
         } catch (error) {
           console.error("Tracking update error:", error);
           set({
@@ -162,23 +190,19 @@ export const useTrackingStore = create(
           });
           return {
             success: false,
-            message: "An error occurred during tracking update",
+            message: "An error occurred during tracking update"
           };
         }
       },
 
-      clearTracking: () => {
-        set({
-          currentTracking: null,
-          error: null,
-        });
+      calculateProgressPercentage: (currentWeight, goalWeight, latestWeight) => {
+        if (currentWeight && goalWeight && latestWeight) {
+          const totalWeightDifference = Math.abs(currentWeight - goalWeight);
+          const progressMade = Math.abs(currentWeight - latestWeight);
+          return Math.min((progressMade / totalWeightDifference) * 100, 100);
+        }
+        return 0;
       },
-
-      getCurrentWeight: () => get().currentTracking?.currentWeight || 0,
-      getGoalWeight: () => get().currentTracking?.goalWeight || 0,
-      getProgressTrend: () => get().currentTracking?.progressTrend || {},
-      getChartData: () => get().currentTracking?.chartData || {},
-      getWeeklyProgress: () => get().currentTracking?.weeklyProgress || {},
     }),
     {
       name: "tracking-storage",

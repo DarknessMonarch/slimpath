@@ -77,7 +77,7 @@
 
   .linkIcon {
     font-size: 20px;
-    color: var(--secondary-color);
+    color: var(--tertiary-color);
   }
 
   .copyField{
@@ -93,7 +93,7 @@
 
   .copyField p {
     font-size: 1rem;
-    color: var(--secondary-color);
+    color: var(--tertiary-color);
   }
 
   .formPromoteBtn {
